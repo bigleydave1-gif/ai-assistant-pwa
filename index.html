@@ -107,23 +107,51 @@ function handleAvatarUpload(event){
 const file=event.target.files[0];
 if(!file)return;
 const reader=new FileReader();
-reader.onload=function(e){
+reader.onload=async function(e){
 const dataUrl=e.target.result;
-const name=prompt('Name this avatar (e.g., "My Cat", "Tony"):','Custom '+(customAvatars.length+1));
-if(!name)return;
-const voiceChoice=confirm('Use male voice for this avatar?\n(OK = Male, Cancel = Female)');
+addMsg('📸 Analyzing image...','system');
+
+// Analyze the image with AI vision
+let analysis=null;
+if(GROQ_KEY){
+try{
+const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+body:JSON.stringify({model:'llama-3.2-90b-vision-preview',messages:[
+{role:'system',content:'Analyze this image. Return ONLY a JSON object with: {"subject":"brief description","type":"person|animal|character|object","name":"suggested name","gender":"male|female|neutral","personality":"one sentence personality description for role-playing as this subject","greeting":"a short greeting this subject would say in first person"}. No other text.'},
+{role:'user',content:[{type:'text',text:'What is in this image? Analyze it for avatar use.'},{type:'image_url',image_url:{url:dataUrl}}]}
+],max_tokens:300,temperature:0.5})
+});
+const data=await resp.json();
+const raw=data.choices?.[0]?.message?.content||'';
+try{analysis=JSON.parse(raw.replace(/```json?\n?/g,'').replace(/```/g,'').trim());}
+catch(e){analysis={subject:raw.slice(0,50),type:'character',name:'Custom',gender:'neutral',personality:'friendly and curious',greeting:'Hey there!'};}
+}catch(e){console.log('Vision failed:',e);}
+}
+
+const suggestedName=analysis?analysis.name:'Custom '+(customAvatars.length+1);
+const name=prompt(`I see: ${analysis?analysis.subject:'an image'}\nName this avatar:`,suggestedName);
+if(!name){event.target.value='';return;}
+
+const voiceType=analysis?(analysis.gender==='male'?'male':'female'):(confirm('Male voice?\n(OK=Male, Cancel=Female)')?'male':'female');
+const persona=analysis?analysis.personality:'friendly and helpful';
+const greeting=analysis?analysis.greeting:'Hey there!';
+const subjectType=analysis?analysis.type:'character';
+
 const id='custom_'+Date.now();
-const avatar={id,name,dataUrl,voice:voiceChoice?'male':'female',created:Date.now()};
+const avatar={id,name,dataUrl,voice:voiceType,persona,greeting,subjectType,created:Date.now()};
 customAvatars.push(avatar);
 localStorage.setItem('custom_avatars',JSON.stringify(customAvatars));
-// Add to AVATAR_SETS
-AVATAR_SETS[id]={gender:voiceChoice?'male':'female',clothed:dataUrl,unclothed:dataUrl,voice:avatar.voice};
+AVATAR_SETS[id]={gender:voiceType==='male'?'male':'female',clothed:dataUrl,unclothed:dataUrl,voice:voiceType,persona,greeting,subjectType};
 renderCustomAvatars();
 chooseAvatar(id);
-addMsg(`📸 "${name}" added as avatar!`,'system');
+
+addMsg(`📸 "${name}" is alive! (${analysis?analysis.subject:'custom avatar'})`,'system');
+addMsg(greeting,'ai');
+speak(greeting);
 };
-reader.readAsDataURL(file);
 event.target.value='';
+reader.readAsDataURL(file);
 }
 
 function renderCustomAvatars(){
@@ -135,7 +163,7 @@ grid.innerHTML='';
 customAvatars.forEach(av=>{
 // Register in AVATAR_SETS if not already
 if(!AVATAR_SETS[av.id]){
-AVATAR_SETS[av.id]={gender:av.voice==='male'?'male':'female',clothed:av.dataUrl,unclothed:av.dataUrl,voice:av.voice||'female'};
+AVATAR_SETS[av.id]={gender:av.voice==='male'?'male':'female',clothed:av.dataUrl,unclothed:av.dataUrl,voice:av.voice||'female',persona:av.persona||'',greeting:av.greeting||'',subjectType:av.subjectType||'character'};
 }
 const div=document.createElement('div');
 div.className='av-choice'+(state.avatar===av.id?' active':'');
@@ -394,7 +422,10 @@ try{
 const bn=localStorage.getItem('bot_name')||'Amy';
 const pp=PERSONALITIES[state.personality].prompt;
 const sc=scriptViewOpen?' You can generate JS code in ```javascript blocks. Globals: document, addMsg(text,type), speak(text), state, updateAvatar(), AVATAR_SETS.':'';
-const sys=`Your name is ${bn}. ${pp}${sc} Keep answers short (1-3 sentences) unless asked for more.`;
+// Use custom persona if this avatar has one
+const currentSet=AVATAR_SETS[state.avatar];
+const personaCtx=currentSet&&currentSet.persona?` You are role-playing as: ${currentSet.persona}. Stay in character as this ${currentSet.subjectType||'character'}. If you are an animal, speak as that animal would (playful, etc). If you are a person, adopt their likely personality.`:'';
+const sys=`Your name is ${bn}. ${pp}${personaCtx}${sc} Keep answers short (1-3 sentences) unless asked for more.`;
 const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
 method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
 body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys},{role:'user',content:text}],max_tokens:800,temperature:0.8})
