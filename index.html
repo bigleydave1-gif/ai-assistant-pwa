@@ -235,6 +235,24 @@ renderCustomAvatars();
 // === STATE ===
 const GROQ_KEY=(function(){const k=localStorage.getItem('groq_api_key')||'';try{return k.startsWith('ey')?atob(k):k;}catch(e){return k;}})();
 const GROK_KEY=(function(){const k=localStorage.getItem('grok_api_key')||'';try{return k.startsWith('ey')?atob(k):k;}catch(e){return k;}})();
+
+// === KEY VALIDATION ===
+function handleAuthError(resp,provider){
+if(resp.status===401||resp.status===403||(resp.status>=400&&resp.status<500)){
+const keyName=provider==='grok'?'grok_api_key':'groq_api_key';
+const providerLabel=provider==='grok'?'Grok':'Groq';
+addMsg(`⚠️ Your ${providerLabel} key appears invalid or expired.`,'system');
+const newKey=prompt(`Your ${providerLabel} API key is invalid. Enter a new one:\n(${provider==='grok'?'console.x.ai':'console.groq.com'})`);
+if(newKey&&newKey.trim()){
+localStorage.setItem(keyName,btoa(newKey.trim()));
+addMsg(`✅ New ${providerLabel} key saved! Retrying...`,'system');
+location.reload();
+return true;
+}
+return true;// signal error handled
+}
+return false;// not an auth error
+}
 const PERSONALITIES={
 sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry, breathy tone.",voice:{rate:0.75,pitch:0.92}},
 friend:{prompt:"You are a warm, supportive best friend. Casual, fun, caring.",voice:{rate:0.88,pitch:1.05}},
@@ -542,6 +560,7 @@ const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
 method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
 body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys},{role:'user',content:text}],max_tokens:800,temperature:0.8})
 });
+if(!resp.ok&&handleAuthError(resp,'groq'))return;
 const data=await resp.json();
 const reply=data.choices?.[0]?.message?.content||'Hmm, I didn\'t catch that.';
 const cb=reply.match(/```(?:javascript|js)?\n?([\s\S]*?)```/);
