@@ -8,7 +8,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .header-btns button.active{background:rgba(180,100,255,0.5);border-color:#b464ff}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
 .avatar-container{position:relative;width:100%;height:40vh;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at center,rgba(80,40,120,0.3) 0%,transparent 70%)}
-.avatar-img{max-width:100%;max-height:100%;object-fit:contain;transition:transform 0.15s ease-out;border-radius:12px;user-select:none;-webkit-user-drag:none}
+.avatar-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;user-select:none;-webkit-user-drag:none;transform-origin:center center}
+.avatar-img.anim-idle{animation:breathe 3s ease-in-out infinite}
+.avatar-img.anim-talk{animation:talkBounce 0.3s ease-in-out infinite}
+.avatar-img.anim-walk{animation:walkCycle 1.2s ease-in-out infinite}
+.avatar-img.anim-sleep{animation:sleepFade 4s ease-in-out infinite;filter:brightness(0.6)}
+.avatar-img.anim-excited{animation:excited 0.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0))}50%{transform:scale(calc(var(--z,1)*1.015)) translate(var(--px,0),calc(var(--py,0px) - 2px))}}
+@keyframes talkBounce{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0))}25%{transform:scale(calc(var(--z,1)*1.02)) translate(var(--px,0),calc(var(--py,0px) - 3px))}75%{transform:scale(calc(var(--z,1)*0.99)) translate(var(--px,0),calc(var(--py,0px) + 1px))}}
+@keyframes walkCycle{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}25%{transform:scale(var(--z,1)) translate(calc(var(--px,0px) + 15px),calc(var(--py,0px) - 5px)) rotate(2deg)}50%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}75%{transform:scale(var(--z,1)) translate(calc(var(--px,0px) - 15px),calc(var(--py,0px) - 5px)) rotate(-2deg)}}
+@keyframes sleepFade{0%,100%{opacity:1;transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0))}50%{opacity:0.7;transform:scale(calc(var(--z,1)*0.98)) translate(var(--px,0),calc(var(--py,0px) + 3px))}}
+@keyframes excited{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}25%{transform:scale(calc(var(--z,1)*1.05)) translate(var(--px,0),calc(var(--py,0px) - 8px)) rotate(3deg)}75%{transform:scale(calc(var(--z,1)*1.05)) translate(var(--px,0),calc(var(--py,0px) - 8px)) rotate(-3deg)}}
+.anim-bar{display:flex;gap:6px;padding:6px 12px;overflow-x:auto;background:rgba(10,0,20,0.7);border-bottom:1px solid rgba(180,100,255,0.1)}
+.anim-bar button{flex-shrink:0;background:rgba(50,180,100,0.15);border:1px solid rgba(50,200,100,0.3);color:#a0e8c0;border-radius:12px;padding:5px 10px;font-size:10px;cursor:pointer}
+.anim-bar button.active{background:rgba(50,200,100,0.35);border-color:#50c878;color:#fff}
 .avatar-picker{display:none;position:absolute;top:0;left:0;right:0;z-index:50;background:rgba(10,0,20,0.95);padding:12px;border-bottom:2px solid rgba(180,100,255,0.3);backdrop-filter:blur(10px)}
 .av-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .av-choice{text-align:center;cursor:pointer;border:2px solid rgba(180,100,255,0.3);border-radius:12px;padding:8px;transition:all 0.2s}
@@ -72,6 +85,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 <button class="active" onclick="showPersonalities()">🎭 Personality</button>
 <button id="btnScript" onclick="toggleScriptView()">📜 Script</button>
 <button onclick="showLearning()">🧠 Memory</button>
+</div>
+<div class="anim-bar" id="animBar">
+<button onclick="setAnim('idle')" id="anim_idle" class="active">🫁 Breathe</button>
+<button onclick="setAnim('talk')" id="anim_talk">💬 Talk</button>
+<button onclick="setAnim('walk')" id="anim_walk">🚶 Walk</button>
+<button onclick="setAnim('excited')" id="anim_excited">🎉 Excited</button>
+<button onclick="setAnim('sleep')" id="anim_sleep">😴 Sleep</button>
+<button onclick="setAnim('none')" id="anim_none">⏸️ Still</button>
 </div>
 <div class="personality-bar" id="personalityBar">
 <button onclick="setPersonality('sensual')" id="p_sensual">💋 Sensual</button>
@@ -219,10 +240,53 @@ function updateAvatar(){
 const img=document.getElementById('avatarImg');
 const set=AVATAR_SETS[state.avatar];
 img.src=state.clothed?set.clothed:set.unclothed;
+// Use CSS custom properties so animations respect zoom/pan
+img.style.setProperty('--z',state.zoom);
+img.style.setProperty('--px',state.panX+'px');
+img.style.setProperty('--py',state.panY+'px');
+// If no animation active, apply static transform
+if(!state.currentAnim||state.currentAnim==='none'){
 img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
+}
 document.getElementById('zoomRange').value=state.zoom*100;
 }
 updateAvatar();
+
+// === ANIMATION SYSTEM ===
+state.currentAnim='idle';
+function setAnim(mode){
+const img=document.getElementById('avatarImg');
+// Remove all animation classes
+img.classList.remove('anim-idle','anim-talk','anim-walk','anim-sleep','anim-excited');
+state.currentAnim=mode;
+if(mode!=='none'){
+img.classList.add('anim-'+mode);
+img.style.transform='';// let animation handle it
+}else{
+img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
+}
+// Update button states
+document.querySelectorAll('.anim-bar button').forEach(b=>b.classList.remove('active'));
+const btn=document.getElementById('anim_'+mode);
+if(btn)btn.classList.add('active');
+addMsg(`Animation: ${mode}`,'system');
+}
+// Auto-animate talk when speaking
+function startTalkAnim(){
+const img=document.getElementById('avatarImg');
+state.prevAnim=state.currentAnim;
+img.classList.remove('anim-idle','anim-walk','anim-sleep','anim-excited');
+img.classList.add('anim-talk');
+}
+function stopTalkAnim(){
+const img=document.getElementById('avatarImg');
+img.classList.remove('anim-talk');
+if(state.prevAnim&&state.prevAnim!=='none'&&state.prevAnim!=='talk'){
+img.classList.add('anim-'+state.prevAnim);
+}else{
+img.classList.add('anim-idle');
+}
+}
 
 // === AVATAR PICKER ===
 function toggleAvatarPicker(){
@@ -305,16 +369,22 @@ setTimeout(selectVoice,500);
 function speak(text){
 if(state.isMuted||!text)return;
 synth.cancel();
+startTalkAnim();
 const chunks=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];
 let delay=0;const pVoice=PERSONALITIES[state.personality].voice;
+let totalDuration=0;
 chunks.forEach(chunk=>{
 setTimeout(()=>{
 const u=new SpeechSynthesisUtterance(chunk.trim());
 u.voice=selectedVoice;u.rate=pVoice.rate;u.pitch=pVoice.pitch;u.volume=1;
+u.onend=function(){if(synth.speaking===false)stopTalkAnim();};
 synth.speak(u);
 },delay);
 delay+=chunk.length*38;
+totalDuration=delay+chunk.length*60;
 });
+// Fallback: stop talk anim after estimated duration
+setTimeout(()=>stopTalkAnim(),totalDuration+500);
 }
 
 // === SPEECH RECOGNITION ===
@@ -410,6 +480,14 @@ if(/put.*(on|clothes|shirt)|dress up|get dressed|clothe/i.test(text)){state.clot
 if(/blonde|first (girl|woman)/i.test(text)&&/switch|use|show|pick/i.test(text)){chooseAvatar('blonde');}
 if(/brunette|second (girl|woman)/i.test(text)&&/switch|use|show|pick/i.test(text)){chooseAvatar('brunette');}
 if(/\b(male|man|guy|boy)\b/i.test(text)&&/switch|use|show|pick|be a/i.test(text)){chooseAvatar('male');}
+
+// Animation commands via chat
+if(/\bwalk\b/i.test(text)&&/make|start|do|go/i.test(text)){setAnim('walk');}
+else if(/\btalk\b/i.test(text)&&/make|start|do/i.test(text)){setAnim('talk');}
+else if(/\bsleep|nap|rest\b/i.test(text)&&/make|go|start/i.test(text)){setAnim('sleep');}
+else if(/\bexcited|happy|jump|dance\b/i.test(text)&&/make|be|get|start/i.test(text)){setAnim('excited');}
+else if(/\bstill|stop|freeze|pause\b/i.test(text)&&/make|be|go|stay/i.test(text)){setAnim('none');}
+else if(/\bbreathe|idle|calm|relax\b/i.test(text)&&/make|be|go|start/i.test(text)){setAnim('idle');}
 
 // Script mode
 const sm=text.match(/(?:add|write|create|make|run)\s+(?:a\s+)?(?:script|code|function)\s+(?:that|to|for)\s+(.+)/i);
