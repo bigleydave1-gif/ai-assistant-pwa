@@ -7,7 +7,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .header-btns button{background:rgba(180,100,255,0.2);border:1px solid rgba(180,100,255,0.3);color:#e0b0ff;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer}
 .header-btns button.active{background:rgba(180,100,255,0.5);border-color:#b464ff}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
-.avatar-container{position:relative;width:100%;height:40vh;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at center,rgba(80,40,120,0.3) 0%,transparent 70%)}
+.avatar-container{position:relative;width:100%;height:30vh;min-height:150px;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at center,rgba(80,40,120,0.3) 0%,transparent 70%)}
 .avatar-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;user-select:none;-webkit-user-drag:none;transform-origin:center center}
 .avatar-img.anim-idle{animation:breathe 3s ease-in-out infinite}
 .avatar-img.anim-talk{animation:talkBounce 0.3s ease-in-out infinite}
@@ -19,8 +19,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 @keyframes walkCycle{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}25%{transform:scale(var(--z,1)) translate(calc(var(--px,0px) + 15px),calc(var(--py,0px) - 5px)) rotate(2deg)}50%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}75%{transform:scale(var(--z,1)) translate(calc(var(--px,0px) - 15px),calc(var(--py,0px) - 5px)) rotate(-2deg)}}
 @keyframes sleepFade{0%,100%{opacity:1;transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0))}50%{opacity:0.7;transform:scale(calc(var(--z,1)*0.98)) translate(var(--px,0),calc(var(--py,0px) + 3px))}}
 @keyframes excited{0%,100%{transform:scale(var(--z,1)) translate(var(--px,0),var(--py,0)) rotate(0deg)}25%{transform:scale(calc(var(--z,1)*1.05)) translate(var(--px,0),calc(var(--py,0px) - 8px)) rotate(3deg)}75%{transform:scale(calc(var(--z,1)*1.05)) translate(var(--px,0),calc(var(--py,0px) - 8px)) rotate(-3deg)}}
-.anim-bar{display:flex;gap:6px;padding:6px 12px;overflow-x:auto;background:rgba(10,0,20,0.7);border-bottom:1px solid rgba(180,100,255,0.1)}
-.anim-bar button{flex-shrink:0;background:rgba(50,180,100,0.15);border:1px solid rgba(50,200,100,0.3);color:#a0e8c0;border-radius:12px;padding:5px 10px;font-size:10px;cursor:pointer}
+.anim-bar{display:flex;gap:4px;padding:4px 10px;overflow-x:auto;background:rgba(10,0,20,0.7);border-bottom:1px solid rgba(180,100,255,0.1)}
+.anim-bar button{flex-shrink:0;background:rgba(50,180,100,0.15);border:1px solid rgba(50,200,100,0.3);color:#a0e8c0;border-radius:12px;padding:3px 8px;font-size:9px;cursor:pointer}
 .anim-bar button.active{background:rgba(50,200,100,0.35);border-color:#50c878;color:#fff}
 .avatar-picker{display:none;position:absolute;top:0;left:0;right:0;z-index:50;background:rgba(10,0,20,0.95);padding:12px;border-bottom:2px solid rgba(180,100,255,0.3);backdrop-filter:blur(10px)}
 .av-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
@@ -33,8 +33,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .zoom-slider input[type=range]::-webkit-slider-track{width:4px;background:rgba(180,100,255,0.3);border-radius:2px}
 .zoom-slider input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;background:rgba(180,100,255,0.8);border-radius:50%;cursor:pointer;border:2px solid #fff}
 .zoom-slider button{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(180,100,255,0.4);color:#fff;font-size:14px;cursor:pointer}
-.controls-bar{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;background:rgba(20,0,40,0.8);border-top:1px solid rgba(180,100,255,0.15);border-bottom:1px solid rgba(180,100,255,0.15)}
-.controls-bar button{flex-shrink:0;background:rgba(180,100,255,0.15);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:16px;padding:6px 12px;font-size:11px;cursor:pointer;white-space:nowrap}
+.controls-bar{display:flex;gap:4px;padding:5px 10px;overflow-x:auto;background:rgba(20,0,40,0.8);border-top:1px solid rgba(180,100,255,0.15);border-bottom:1px solid rgba(180,100,255,0.15)}
+.controls-bar button{flex-shrink:0;background:rgba(180,100,255,0.15);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:16px;padding:4px 10px;font-size:10px;cursor:pointer;white-space:nowrap}
 .controls-bar button.active{background:rgba(255,105,180,0.3);border-color:#ff69b4;color:#ffb3d9}
 .personality-bar{display:flex;gap:6px;padding:6px 12px;overflow-x:auto;background:rgba(10,0,20,0.6)}
 .personality-bar button{flex-shrink:0;background:rgba(100,50,150,0.2);border:1px solid rgba(150,80,200,0.3);color:#c9a0e8;border-radius:12px;padding:5px 10px;font-size:10px;cursor:pointer}
@@ -45,12 +45,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .msg.user{align-self:flex-end;background:rgba(255,105,180,0.2);border:1px solid rgba(255,105,180,0.3);color:#ffd4e8}
 .msg.system{align-self:center;background:rgba(255,200,50,0.1);border:1px solid rgba(255,200,50,0.2);color:#ffe4a0;font-size:12px;font-style:italic}
 .msg.code{align-self:flex-start;background:rgba(0,50,0,0.3);border:1px solid rgba(0,200,0,0.2);color:#a0ffa0;font-family:'SF Mono',monospace;font-size:11px;max-width:95%}
-.input-area{display:flex;gap:8px;padding:12px;background:rgba(20,0,40,0.9);border-top:1px solid rgba(180,100,255,0.2)}
-.input-area input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(180,100,255,0.3);border-radius:20px;padding:10px 16px;color:#fff;font-size:15px;outline:none}
-.input-area input:focus{border-color:#b464ff}
-.input-area button{background:linear-gradient(135deg,#b464ff,#ff69b4);border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.cmd-bar{display:flex;gap:6px;padding:8px 12px;background:rgba(10,0,20,0.9);border-top:1px solid rgba(180,100,255,0.1);overflow-x:auto}
-.cmd-bar button{flex-shrink:0;background:rgba(180,100,255,0.2);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
+.input-area{display:flex;gap:8px;padding:10px 12px;background:rgba(20,0,40,0.95);border-top:2px solid rgba(180,100,255,0.4);flex-shrink:0}
+.input-area input{flex:1;background:rgba(255,255,255,0.1);border:2px solid rgba(180,100,255,0.5);border-radius:20px;padding:10px 16px;color:#fff;font-size:15px;outline:none}
+.input-area input:focus{border-color:#b464ff;background:rgba(255,255,255,0.15)}
+.input-area button{background:linear-gradient(135deg,#b464ff,#ff69b4);border:none;border-radius:50%;width:40px;height:40px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmd-bar{display:flex;gap:6px;padding:6px 12px;background:rgba(10,0,20,0.95);border-top:1px solid rgba(180,100,255,0.2);overflow-x:auto;flex-shrink:0}
+.cmd-bar button{flex-shrink:0;background:rgba(180,100,255,0.2);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer}
 .cmd-bar button:active{transform:scale(0.95)}
 </style></head><body>
 <div class="header"><h1>Amy</h1><div class="header-btns">
@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 <img id="avatarImg" class="avatar-img" src="img/female_unclothed.jpg" alt="Avatar">
 <div class="avatar-picker" id="avatarPicker">
 <div class="av-grid" id="avGrid">
-<div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_unclothed.jpg"><span>Blonde ♀</span></div>
+<div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_blonde.jpg"><span>Blonde ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('brunette')" id="av_brunette"><img src="img/female_clothed.jpg"><span>Brunette ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('male')" id="av_male"><img src="img/male_clothed.jpg"><span>Athletic ♂</span></div>
 <div class="av-choice" onclick="document.getElementById('avatarUpload').click()" id="av_add" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:71px;min-height:83px"><span style="font-size:28px;line-height:1">📷</span><span>Add New</span></div>
@@ -132,14 +132,15 @@ reader.onload=async function(e){
 const dataUrl=e.target.result;
 addMsg('📸 Analyzing image...','system');
 
-// Analyze the image with AI vision
+// Analyze the image with AI vision (Grok preferred, Groq fallback)
 let analysis=null;
-if(GROQ_KEY){
+const visionPrompt='Analyze this image. Return ONLY a JSON object with: {"subject":"brief description","type":"person|animal|character|object","name":"suggested name","gender":"male|female|neutral","personality":"one sentence personality description for role-playing as this subject","greeting":"a short greeting this subject would say in first person"}. No other text.';
+if(GROK_KEY){
 try{
-const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-body:JSON.stringify({model:'llama-3.2-90b-vision-preview',messages:[
-{role:'system',content:'Analyze this image. Return ONLY a JSON object with: {"subject":"brief description","type":"person|animal|character|object","name":"suggested name","gender":"male|female|neutral","personality":"one sentence personality description for role-playing as this subject","greeting":"a short greeting this subject would say in first person"}. No other text.'},
+const resp=await fetch('https://api.x.ai/v1/chat/completions',{
+method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROK_KEY},
+body:JSON.stringify({model:'grok-2-vision-latest',messages:[
+{role:'system',content:visionPrompt},
 {role:'user',content:[{type:'text',text:'What is in this image? Analyze it for avatar use.'},{type:'image_url',image_url:{url:dataUrl}}]}
 ],max_tokens:300,temperature:0.5})
 });
@@ -147,7 +148,27 @@ const data=await resp.json();
 const raw=data.choices?.[0]?.message?.content||'';
 try{analysis=JSON.parse(raw.replace(/```json?\n?/g,'').replace(/```/g,'').trim());}
 catch(e){analysis={subject:raw.slice(0,50),type:'character',name:'Custom',gender:'neutral',personality:'friendly and curious',greeting:'Hey there!'};}
-}catch(e){console.log('Vision failed:',e);}
+addMsg('🧠 Grok analyzed the image!','system');
+}catch(e){console.log('Grok vision failed:',e);}
+}
+if(!analysis&&GROQ_KEY){
+try{
+const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
+body:JSON.stringify({model:'llama-3.2-90b-vision-preview',messages:[
+{role:'system',content:visionPrompt},
+{role:'user',content:[{type:'text',text:'What is in this image? Analyze it for avatar use.'},{type:'image_url',image_url:{url:dataUrl}}]}
+],max_tokens:300,temperature:0.5})
+});
+const data=await resp.json();
+const raw=data.choices?.[0]?.message?.content||'';
+try{analysis=JSON.parse(raw.replace(/```json?\n?/g,'').replace(/```/g,'').trim());}
+catch(e){analysis={subject:raw.slice(0,50),type:'character',name:'Custom',gender:'neutral',personality:'friendly and curious',greeting:'Hey there!'};}
+}catch(e){console.log('Groq vision failed:',e);}
+}
+if(!analysis&&!GROK_KEY&&!GROQ_KEY){
+addMsg('⚠️ No vision API key. Tap ⚙️ to add Grok or Groq key for image analysis.','system');
+analysis={subject:'uploaded image',type:'character',name:'Custom',gender:'neutral',personality:'friendly and expressive',greeting:'Hey there!'};
 }
 
 const suggestedName=analysis?analysis.name:'Custom '+(customAvatars.length+1);
@@ -213,6 +234,7 @@ renderCustomAvatars();
 
 // === STATE ===
 const GROQ_KEY=localStorage.getItem('groq_api_key')||'';
+const GROK_KEY=localStorage.getItem('grok_api_key')||'';
 const PERSONALITIES={
 sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry, breathy tone.",voice:{rate:0.75,pitch:0.92}},
 friend:{prompt:"You are a warm, supportive best friend. Casual, fun, caring.",voice:{rate:0.88,pitch:1.05}},
@@ -240,13 +262,19 @@ function updateAvatar(){
 const img=document.getElementById('avatarImg');
 const set=AVATAR_SETS[state.avatar];
 img.src=state.clothed?set.clothed:set.unclothed;
-// Use CSS custom properties so animations respect zoom/pan
+// Always update CSS vars so animations use current zoom/pan
 img.style.setProperty('--z',state.zoom);
 img.style.setProperty('--px',state.panX+'px');
 img.style.setProperty('--py',state.panY+'px');
-// If no animation active, apply static transform
+// If no animation, apply transform directly
 if(!state.currentAnim||state.currentAnim==='none'){
 img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
+}else{
+// Force animation restart to pick up new vars
+img.classList.remove('anim-'+state.currentAnim);
+void img.offsetWidth;// trigger reflow
+img.classList.add('anim-'+state.currentAnim);
+img.style.transform='';
 }
 document.getElementById('zoomRange').value=state.zoom*100;
 }
@@ -254,23 +282,29 @@ updateAvatar();
 
 // === ANIMATION SYSTEM ===
 state.currentAnim='idle';
-function setAnim(mode){
+function setAnim(mode,silent){
 const img=document.getElementById('avatarImg');
-// Remove all animation classes
 img.classList.remove('anim-idle','anim-talk','anim-walk','anim-sleep','anim-excited');
 state.currentAnim=mode;
 if(mode!=='none'){
 img.classList.add('anim-'+mode);
-img.style.transform='';// let animation handle it
-}else{
-img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
 }
-// Update button states
+// Always update CSS vars for animation to pick up
+img.style.setProperty('--z',state.zoom);
+img.style.setProperty('--px',state.panX+'px');
+img.style.setProperty('--py',state.panY+'px');
+if(mode==='none'){
+img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
+}else{
+img.style.transform='';
+}
 document.querySelectorAll('.anim-bar button').forEach(b=>b.classList.remove('active'));
 const btn=document.getElementById('anim_'+mode);
 if(btn)btn.classList.add('active');
-addMsg(`Animation: ${mode}`,'system');
+if(!silent)addMsg(`Animation: ${mode}`,'system');
 }
+// Initialize idle animation on the image
+setTimeout(()=>setAnim('idle',true),100);
 // Auto-animate talk when speaking
 function startTalkAnim(){
 const img=document.getElementById('avatarImg');
@@ -544,7 +578,10 @@ function cmdShutdown(){state.isRunning=false;synth.cancel();addMsg('💤 Sleepin
 // === SETTINGS ===
 function openSettings(){
 const key=prompt('Groq API key (free at console.groq.com):',GROQ_KEY);
-if(key!==null){localStorage.setItem('groq_api_key',key);location.reload();}
+if(key!==null){localStorage.setItem('groq_api_key',key);}
+const grokKey=prompt('Grok API key (for image analysis, from console.x.ai):',localStorage.getItem('grok_api_key')||'');
+if(grokKey!==null){localStorage.setItem('grok_api_key',grokKey);}
+location.reload();
 }
 
 // === INPUT ===
