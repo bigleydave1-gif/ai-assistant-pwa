@@ -49,10 +49,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 <div class="avatar-container" id="avatarContainer">
 <img id="avatarImg" class="avatar-img" src="img/female_unclothed.jpg" alt="Avatar">
 <div class="avatar-picker" id="avatarPicker">
-<div class="av-grid">
+<div class="av-grid" id="avGrid">
 <div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_unclothed.jpg"><span>Blonde ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('brunette')" id="av_brunette"><img src="img/female_clothed.jpg"><span>Brunette ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('male')" id="av_male"><img src="img/male_clothed.jpg"><span>Athletic ♂</span></div>
+<div class="av-choice" onclick="document.getElementById('avatarUpload').click()" id="av_add" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:71px;min-height:83px"><span style="font-size:28px;line-height:1">📷</span><span>Add New</span></div>
+</div>
+<input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+<div id="customAvatarPanel" style="display:none;margin-top:10px;padding:10px;border-top:1px solid rgba(180,100,255,0.2)">
+<div style="font-size:11px;color:#d9b3ff;margin-bottom:8px">Custom avatars (tap to use, long-press to delete):</div>
+<div class="av-grid" id="customAvGrid"></div>
 </div>
 </div>
 <div class="zoom-slider">
@@ -93,6 +99,68 @@ blonde:{gender:'female',clothed:'img/female_blonde.jpg',unclothed:'img/female_un
 brunette:{gender:'female',clothed:'img/female_clothed.jpg',unclothed:'img/female_clothed.jpg',voice:'female'},
 male:{gender:'male',clothed:'img/male_clothed.jpg',unclothed:'img/male_unclothed.jpg',voice:'male'}
 };
+
+// === CUSTOM AVATARS (stored in localStorage as data URLs) ===
+let customAvatars=JSON.parse(localStorage.getItem('custom_avatars')||'[]');
+
+function handleAvatarUpload(event){
+const file=event.target.files[0];
+if(!file)return;
+const reader=new FileReader();
+reader.onload=function(e){
+const dataUrl=e.target.result;
+const name=prompt('Name this avatar (e.g., "My Cat", "Tony"):','Custom '+(customAvatars.length+1));
+if(!name)return;
+const voiceChoice=confirm('Use male voice for this avatar?\n(OK = Male, Cancel = Female)');
+const id='custom_'+Date.now();
+const avatar={id,name,dataUrl,voice:voiceChoice?'male':'female',created:Date.now()};
+customAvatars.push(avatar);
+localStorage.setItem('custom_avatars',JSON.stringify(customAvatars));
+// Add to AVATAR_SETS
+AVATAR_SETS[id]={gender:voiceChoice?'male':'female',clothed:dataUrl,unclothed:dataUrl,voice:avatar.voice};
+renderCustomAvatars();
+chooseAvatar(id);
+addMsg(`📸 "${name}" added as avatar!`,'system');
+};
+reader.readAsDataURL(file);
+event.target.value='';
+}
+
+function renderCustomAvatars(){
+const grid=document.getElementById('customAvGrid');
+const panel=document.getElementById('customAvatarPanel');
+if(customAvatars.length===0){panel.style.display='none';return;}
+panel.style.display='block';
+grid.innerHTML='';
+customAvatars.forEach(av=>{
+// Register in AVATAR_SETS if not already
+if(!AVATAR_SETS[av.id]){
+AVATAR_SETS[av.id]={gender:av.voice==='male'?'male':'female',clothed:av.dataUrl,unclothed:av.dataUrl,voice:av.voice||'female'};
+}
+const div=document.createElement('div');
+div.className='av-choice'+(state.avatar===av.id?' active':'');
+div.id='av_'+av.id;
+div.innerHTML=`<img src="${av.dataUrl}"><span>${av.name}</span>`;
+div.onclick=()=>chooseAvatar(av.id);
+// Long press to delete
+let timer;
+div.addEventListener('touchstart',()=>{timer=setTimeout(()=>{
+if(confirm(`Delete "${av.name}" avatar?`)){
+customAvatars=customAvatars.filter(a=>a.id!==av.id);
+localStorage.setItem('custom_avatars',JSON.stringify(customAvatars));
+delete AVATAR_SETS[av.id];
+if(state.avatar===av.id){chooseAvatar('blonde');}
+renderCustomAvatars();
+addMsg(`🗑️ "${av.name}" removed`,'system');
+}
+},800);});
+div.addEventListener('touchend',()=>clearTimeout(timer));
+div.addEventListener('touchmove',()=>clearTimeout(timer));
+grid.appendChild(div);
+});
+}
+// Init custom avatars on load
+renderCustomAvatars();
 
 // === STATE ===
 const GROQ_KEY=localStorage.getItem('groq_api_key')||'';
