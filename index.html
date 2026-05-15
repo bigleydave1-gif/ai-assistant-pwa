@@ -63,7 +63,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 <img id="avatarImg" class="avatar-img" src="img/female_unclothed.jpg" alt="Avatar">
 <div class="avatar-picker" id="avatarPicker">
 <div class="av-grid" id="avGrid">
-<div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_blonde.jpg"><span>Blonde ♀</span></div>
+<div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_clothed.jpg"><span>Blonde ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('brunette')" id="av_brunette"><img src="img/female_clothed.jpg"><span>Brunette ♀</span></div>
 <div class="av-choice" onclick="chooseAvatar('male')" id="av_male"><img src="img/male_clothed.jpg"><span>Athletic ♂</span></div>
 <div class="av-choice" onclick="document.getElementById('avatarUpload').click()" id="av_add" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:71px;min-height:83px"><span style="font-size:28px;line-height:1">📷</span><span>Add New</span></div>
@@ -116,7 +116,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 <script>
 // === AVATAR CONFIG ===
 const AVATAR_SETS={
-blonde:{gender:'female',clothed:'img/female_blonde.jpg',unclothed:'img/female_unclothed.jpg',voice:'samantha'},
+blonde:{gender:'female',clothed:'img/female_clothed.jpg',unclothed:'img/female_unclothed.jpg',voice:'samantha'},
 brunette:{gender:'female',clothed:'img/female_clothed.jpg',unclothed:'img/female_clothed.jpg',voice:'female'},
 male:{gender:'male',clothed:'img/male_clothed.jpg',unclothed:'img/male_unclothed.jpg',voice:'male'}
 };
