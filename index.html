@@ -233,8 +233,8 @@ grid.appendChild(div);
 renderCustomAvatars();
 
 // === STATE ===
-const GROQ_KEY=localStorage.getItem('groq_api_key')||'';
-const GROK_KEY=localStorage.getItem('grok_api_key')||'';
+const GROQ_KEY=(function(){const k=localStorage.getItem('groq_api_key')||'';try{return k.startsWith('ey')?atob(k):k;}catch(e){return k;}})();
+const GROK_KEY=(function(){const k=localStorage.getItem('grok_api_key')||'';try{return k.startsWith('ey')?atob(k):k;}catch(e){return k;}})();
 const PERSONALITIES={
 sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry, breathy tone.",voice:{rate:0.75,pitch:0.92}},
 friend:{prompt:"You are a warm, supportive best friend. Casual, fun, caring.",voice:{rate:0.88,pitch:1.05}},
@@ -527,7 +527,7 @@ else if(/\bbreathe|idle|calm|relax\b/i.test(text)&&/make|be|go|start/i.test(text
 const sm=text.match(/(?:add|write|create|make|run)\s+(?:a\s+)?(?:script|code|function)\s+(?:that|to|for)\s+(.+)/i);
 if(sm&&scriptViewOpen){addMsg('🔨 Generating: '+sm[1],'system');await generateAndRunScript(sm[1]);return;}
 
-if(!GROQ_KEY){addMsg('⚠️ No API key. Tap ⚙️ → enter Groq key (free at console.groq.com)','system');return;}
+if(!GROQ_KEY){addMsg('⚠️ First time? Tap ⚙️ → option 3 to add your Groq key (free at console.groq.com). You only need to do this once!','system');return;}
 if(!state.isRunning){addMsg('💤 Sleeping. Tap ⚡ Start to wake.','system');return;}
 
 try{
@@ -577,11 +577,35 @@ function cmdShutdown(){state.isRunning=false;synth.cancel();addMsg('💤 Sleepin
 
 // === SETTINGS ===
 function openSettings(){
-const key=prompt('Groq API key (free at console.groq.com):',GROQ_KEY);
-if(key!==null){localStorage.setItem('groq_api_key',key);}
-const grokKey=prompt('Grok API key (for image analysis, from console.x.ai):',localStorage.getItem('grok_api_key')||'');
-if(grokKey!==null){localStorage.setItem('grok_api_key',grokKey);}
-location.reload();
+// Check which keys are already stored
+const hasGroq=!!localStorage.getItem('groq_api_key');
+const hasGrok=!!localStorage.getItem('grok_api_key');
+const userName=localStorage.getItem('user_name')||'';
+const botN=localStorage.getItem('bot_name')||'Amy';
+
+let msg='⚙️ Settings\n\n';
+msg+='🤖 Bot name: '+botN+(hasGroq?' | ✅ Groq key saved':' | ❌ No Groq key');
+msg+=(hasGrok?' | ✅ Grok key saved':' | ❌ No Grok key');
+msg+='\n\nWhat to change?\n1 = Bot name\n2 = Your name\n3 = Groq API key'+(hasGroq?' (replace)':' (add)')+'\n4 = Grok API key'+(hasGrok?' (replace)':' (add)')+'\n5 = Clear all keys\n0 = Cancel';
+
+const choice=prompt(msg,'0');
+if(!choice||choice==='0')return;
+
+if(choice==='1'){
+const n=prompt('Bot name:',botN);
+if(n){localStorage.setItem('bot_name',n);location.reload();}
+}else if(choice==='2'){
+const n=prompt('Your name:',userName);
+if(n!==null){localStorage.setItem('user_name',n);location.reload();}
+}else if(choice==='3'){
+const k=prompt('Groq API key (free at console.groq.com):\nThis is saved locally on your device — only Amy can access it.','');
+if(k){localStorage.setItem('groq_api_key',btoa(k));addMsg('✅ Groq key saved securely on your device. You won\'t need to enter it again.','system');location.reload();}
+}else if(choice==='4'){
+const k=prompt('Grok API key (from console.x.ai):\nThis is saved locally on your device — only Amy can access it.','');
+if(k){localStorage.setItem('grok_api_key',btoa(k));addMsg('✅ Grok key saved securely on your device. You won\'t need to enter it again.','system');location.reload();}
+}else if(choice==='5'){
+if(confirm('Remove all API keys from this device?')){localStorage.removeItem('groq_api_key');localStorage.removeItem('grok_api_key');location.reload();}
+}
 }
 
 // === INPUT ===
