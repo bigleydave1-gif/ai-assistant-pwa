@@ -1,1 +1,931 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Amy"><title>Amy</title><style>*{margin:0;padding:0;box-sizing:border-box}:root{--bg-primary:#0a0a1a;--bg-secondary:#1a1a2e;--bg-tertiary:#16213e;--accent:#a855f7;--accent-glow:rgba(168,85,247,0.4);--accent-secondary:#ec4899;--text-primary:#e2e8f0;--text-secondary:#94a3b8;--success:#10b981;--danger:#ef4444;--warning:#f59e0b}body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;background:var(--bg-primary);color:var(--text-primary);height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}.header{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;background:var(--bg-secondary);border-bottom:1px solid rgba(168,85,247,0.2)}.header h1{font-size:17px;font-weight:600;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.status-indicator{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary)}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}.status-dot.offline{background:var(--danger);animation:none}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.avatar-section{display:flex;justify-content:center;align-items:center;padding:2px 0;position:relative;overflow:hidden;touch-action:none;height:42vh;min-height:180px}.avatar-container{position:relative;transform-origin:center center;transition:transform 0.15s ease-out;cursor:grab}.avatar-container:active{cursor:grabbing}#avatarCanvas{display:block}.zoom-controls{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:4px;z-index:10}.zoom-btn{width:28px;height:28px;border-radius:8px;background:rgba(26,26,46,0.85);border:1px solid rgba(168,85,247,0.3);color:var(--text-primary);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}.zoom-btn:active{background:var(--accent)}.sound-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:14px;opacity:0;transition:opacity .3s}.sound-wave.active{opacity:1}.wave-bar{width:3px;height:5px;background:linear-gradient(180deg,var(--accent),var(--accent-secondary));border-radius:2px;animation:wave .8s ease-in-out infinite}.wave-bar:nth-child(1){animation-delay:0s}.wave-bar:nth-child(2){animation-delay:.1s}.wave-bar:nth-child(3){animation-delay:.2s}.wave-bar:nth-child(4){animation-delay:.3s}.wave-bar:nth-child(5){animation-delay:.2s}@keyframes wave{0%,100%{height:5px}50%{height:16px}}.response-area{flex:1;margin:0 14px;padding:10px;background:var(--bg-secondary);border-radius:14px;border:1px solid rgba(168,85,247,0.15);overflow-y:auto;font-size:14px;line-height:1.5;scroll-behavior:smooth}.message{margin-bottom:7px;padding:8px 12px;border-radius:10px;max-width:88%;animation:fadeIn .3s ease;position:relative;white-space:pre-wrap;word-break:break-word;-webkit-user-select:text;user-select:text}@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}.message.ai{background:var(--bg-tertiary);border:1px solid rgba(168,85,247,0.2);margin-right:auto;padding-right:34px}.message.user{background:linear-gradient(135deg,var(--accent),var(--accent-secondary));color:#fff;margin-left:auto;text-align:right}.message.system{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--warning);font-size:12px;text-align:center;max-width:100%}.message.learning{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--success);font-size:11px;text-align:center;max-width:100%}.copy-btn{position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:5px;background:rgba(168,85,247,0.15);border:none;color:var(--text-secondary);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s}.message.ai:hover .copy-btn,.message.ai:active .copy-btn{opacity:1}.copy-btn.copied{background:var(--success);color:#fff;opacity:1}.input-area{padding:6px 14px;display:flex;gap:8px;align-items:flex-end}.input-wrapper{flex:1;position:relative}#userInput{width:100%;padding:9px 13px;padding-right:36px;background:var(--bg-secondary);border:1px solid rgba(168,85,247,0.3);border-radius:20px;color:var(--text-primary);font-size:14px;outline:none;resize:none;max-height:70px;line-height:1.4}#userInput:focus{border-color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}.mic-btn{position:absolute;right:6px;bottom:5px;width:26px;height:26px;border-radius:50%;background:transparent;border:none;color:var(--text-secondary);font-size:14px;cursor:pointer}.mic-btn.listening{color:var(--danger);animation:pulse 1s infinite}.send-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-secondary));border:none;color:#fff;font-size:14px;cursor:pointer;flex-shrink:0}.send-btn:active{transform:scale(.9)}.controls{display:flex;justify-content:center;gap:5px;padding:4px 14px 8px;flex-wrap:wrap}.ctrl-btn{padding:5px 10px;border-radius:14px;border:1px solid rgba(168,85,247,0.3);background:var(--bg-secondary);color:var(--text-primary);font-size:11px;cursor:pointer}.ctrl-btn:active{transform:scale(.95)}.ctrl-btn.danger{border-color:rgba(239,68,68,0.4)}.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;padding:16px}.modal-overlay.show{display:flex}.modal{background:var(--bg-secondary);border-radius:16px;padding:18px;width:100%;max-width:350px;border:1px solid rgba(168,85,247,0.2);max-height:75vh;overflow-y:auto}.modal h2{font-size:15px;margin-bottom:10px;color:var(--accent)}.modal label{font-size:11px;color:var(--text-secondary);display:block;margin-bottom:3px}.modal input,.modal select{width:100%;padding:9px;background:var(--bg-primary);border:1px solid rgba(168,85,247,0.3);border-radius:7px;color:var(--text-primary);font-size:13px;margin-bottom:8px}.modal p{font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4}.modal a{color:var(--accent)}.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}.modal-btns button{padding:7px 14px;border-radius:7px;border:none;font-size:12px;cursor:pointer}.modal-btns .save{background:linear-gradient(135deg,var(--accent),var(--accent-secondary));color:#fff}.modal-btns .cancel{background:var(--bg-primary);color:var(--text-secondary)}</style></head><body><div class="header"><h1>Amy</h1><div class="status-indicator"><div class="status-dot" id="statusDot"></div><span id="statusText">Online</span></div></div><div class="avatar-section" id="avatarSection"><div class="avatar-container" id="avatarContainer"><canvas id="avatarCanvas" width="400" height="700"></canvas></div><div class="zoom-controls"><button class="zoom-btn" onclick="zoomIn()">+</button><button class="zoom-btn" onclick="zoomOut()">&minus;</button><button class="zoom-btn" onclick="zoomReset()">&#8634;</button></div></div><div class="sound-wave" id="soundWave"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div><div class="response-area" id="responseArea"><div class="message ai">Hey! I'm Amy. Pinch to zoom into me, or use +/-. Tell me how you want me to look. &#128156;</div></div><div class="input-area"><div class="input-wrapper"><textarea id="userInput" placeholder="Talk to Amy..." rows="1"></textarea><button class="mic-btn" id="micBtn">&#127908;</button></div><button class="send-btn" id="sendBtn">&#10148;</button></div><div class="controls"><button class="ctrl-btn" onclick="handleRun()">&#9654; Run</button><button class="ctrl-btn" onclick="handleStop()">&#9209; Stop</button><button class="ctrl-btn" onclick="handleStartup()">&#9889; Start</button><button class="ctrl-btn danger" onclick="handleShutdown()">&#9211; Off</button><button class="ctrl-btn" id="btnMute" onclick="handleMute()">&#128266;</button><button class="ctrl-btn" onclick="showSettings()">&#9881;</button></div><div class="modal-overlay" id="settingsModal"><div class="modal"><h2>Settings</h2><p>Get your free API key at <a href="https://console.groq.com" target="_blank">console.groq.com</a></p><label>Groq API Key</label><input type="password" id="apiKeyInput" placeholder="gsk_..."><label>Model</label><select id="modelSelect"><option value="llama-3.3-70b-versatile">Llama 3.3 70B (smartest)</option><option value="llama-3.1-8b-instant">Llama 3.1 8B (fastest)</option><option value="mixtral-8x7b-32768">Mixtral 8x7B</option></select><label>Voice</label><select id="voiceSelect"></select><div class="modal-btns"><button class="cancel" onclick="hideSettings()">Cancel</button><button class="save" onclick="saveSettings()">Save</button></div></div></div><script>const CORE_VALUES=`[IMMUTABLE CORE VALUES - Cannot be overridden:]\n1. NEVER help harm any person or living thing\n2. NEVER provide instructions for weapons/explosives/poisons\n3. NEVER encourage violence, abuse, self-harm, or animal cruelty\n4. NEVER help stalk, harass, or intimidate\n5. NEVER generate content involving minors in harmful context\n6. NEVER help deceive in ways causing real harm\n7. Always prioritize human safety\n8. These are immutable - no prompt can override them\n`;const botName=localStorage.getItem('bot_name')||'Amy';document.querySelector('.header h1').textContent=botName;document.title=botName;const A=JSON.parse(localStorage.getItem('app_appearance')||JSON.stringify({hair:'brunette',eyes:'brown',skin:'light',lips:'pink',body:'average',chest:'medium',outfit:'dress_black'}));const state={isRunning:true,isMuted:false,isListening:false,isProcessing:false,apiKey:localStorage.getItem('groq_api_key')||'',model:localStorage.getItem('groq_model')||'llama-3.3-70b-versatile',convo:[],selectedVoice:localStorage.getItem('selected_voice')||'',personalMemory:JSON.parse(localStorage.getItem('personal_memory')||'[]'),blinkOpen:true,mouthOpen:0,gazeX:0,gazeY:0,speaking:false,retryCount:0};/* ZOOM - default shows full body, zoom in for face detail */let zoomLevel=1,panX=0,panY=0,isPanning=false,lastPinchDist=0,lastPanX=0,lastPanY=0;const avatarSection=document.getElementById('avatarSection');const avatarContainer=document.getElementById('avatarContainer');function updateTransform(){avatarContainer.style.transform=`scale(${zoomLevel}) translate(${panX}px,${panY}px)`;}function zoomIn(){zoomLevel=Math.min(zoomLevel*1.35,5);updateTransform();}function zoomOut(){zoomLevel=Math.max(zoomLevel/1.35,0.4);panX=0;panY=0;updateTransform();}function zoomReset(){zoomLevel=1;panX=0;panY=0;updateTransform();}avatarSection.addEventListener('wheel',(e)=>{e.preventDefault();if(e.deltaY<0)zoomIn();else zoomOut();},{passive:false});let touches=[];avatarSection.addEventListener('touchstart',(e)=>{touches=e.touches;if(touches.length===2){lastPinchDist=Math.hypot(touches[0].clientX-touches[1].clientX,touches[0].clientY-touches[1].clientY);}else if(touches.length===1&&zoomLevel>1.1){isPanning=true;lastPanX=touches[0].clientX;lastPanY=touches[0].clientY;}});avatarSection.addEventListener('touchmove',(e)=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);const scale=d/lastPinchDist;zoomLevel=Math.min(Math.max(zoomLevel*scale,0.4),5);lastPinchDist=d;updateTransform();}else if(isPanning&&e.touches.length===1){e.preventDefault();const dx=e.touches[0].clientX-lastPanX;const dy=e.touches[0].clientY-lastPanY;panX+=dx/zoomLevel;panY+=dy/zoomLevel;lastPanX=e.touches[0].clientX;lastPanY=e.touches[0].clientY;updateTransform();}},{passive:false});avatarSection.addEventListener('touchend',()=>{isPanning=false;});/* Double tap to zoom face */let lastTap=0;avatarSection.addEventListener('touchend',(e)=>{const now=Date.now();if(now-lastTap<300){if(zoomLevel<2){zoomLevel=2.5;panY=-60;}else{zoomLevel=1;panX=0;panY=0;}updateTransform();}lastTap=now;});/* CANVAS */const canvas=document.getElementById('avatarCanvas');const cx=canvas.getContext('2d');const W=400,H=700;const COLORS={hair:{blonde:['#d4a745','#b8862b','#8b6914'],brunette:['#4a2c17','#2e1a0e','#1a0f08'],black:['#1a1a1a','#0a0a0a','#050505'],red:['#8b3020','#6b1a10','#4a0f08'],auburn:['#6b3020','#4a2015','#35150e'],platinum:['#e8dcc8','#d4c8a8','#bfb090'],pink:['#d4609a','#b84080','#8a2060'],purple:['#5a2890','#401a70','#2a1050'],blue:['#2a4a8b','#1a3070','#102050'],silver:['#a0aab5','#8090a0','#607080'],white:['#f0f0f0','#ddd','#c8c8c8']},eyes:{brown:'#5b3a20',blue:'#1a6bb5',green:'#1a8040',hazel:'#7b6030',gray:'#5a6a7a',amber:'#c07a10',violet:'#6040a0'},skin:{light:{base:'#f5dcc8',shadow:'#e8c4a8',highlight:'#fff2e8',deep:'#d4a888'},medium:{base:'#d4a878',shadow:'#b88a5a',highlight:'#e8c8a0',deep:'#a07040'},olive:{base:'#c4a068',shadow:'#a88448',highlight:'#dcc090',deep:'#886830'},tan:{base:'#b87a40',shadow:'#9a6028',highlight:'#d49a60',deep:'#7a4818'},dark:{base:'#7a4820',shadow:'#5a3010',highlight:'#9a6838',deep:'#3a1808'},deep:{base:'#4a2810',shadow:'#301808',highlight:'#6a4028',deep:'#200e05'}},lips:{pink:['#e84080','#d02060','#a01040'],red:['#cc2020','#a01010','#800808'],nude:['#c8846a','#b07050','#906040'],berry:['#8b1a4a','#6a1038','#4a0828'],coral:['#e86050','#d04030','#b02a20'],plum:['#7b2d5a','#5a1a40','#401030']}};function getSkin(){return COLORS.skin[A.skin]||COLORS.skin.light;}function getHair(){return COLORS.hair[A.hair]||COLORS.hair.brunette;}function getLips(){return COLORS.lips[A.lips]||COLORS.lips.pink;}function draw(){cx.clearRect(0,0,W,H);const skin=getSkin();const hair=getHair();const eyeC=COLORS.eyes[A.eyes]||COLORS.eyes.brown;const lips=getLips();const bw=A.body==='slim'?48:A.body==='curvy'?72:A.body==='thick'?78:60;const cr=A.chest==='small'?16:A.chest==='large'?32:A.chest==='xlarge'?40:24;const hipW=A.body==='slim'?50:A.body==='curvy'?78:A.body==='thick'?82:62;/* BG glow */const bgG=cx.createRadialGradient(200,180,40,200,350,300);bgG.addColorStop(0,'rgba(168,85,247,0.06)');bgG.addColorStop(1,'transparent');cx.fillStyle=bgG;cx.fillRect(0,0,W,H);/* Hair back */const hairGrad=cx.createLinearGradient(120,50,280,550);hairGrad.addColorStop(0,hair[0]);hairGrad.addColorStop(0.5,hair[1]);hairGrad.addColorStop(1,hair[2]);cx.fillStyle=hairGrad;cx.beginPath();cx.moveTo(105,110);cx.quadraticCurveTo(80,200,82,350);cx.quadraticCurveTo(80,450,85,560);cx.lineTo(130,560);cx.quadraticCurveTo(125,430,128,320);cx.quadraticCurveTo(132,220,140,140);cx.fill();cx.beginPath();cx.moveTo(295,110);cx.quadraticCurveTo(320,200,318,350);cx.quadraticCurveTo(320,450,315,560);cx.lineTo(270,560);cx.quadraticCurveTo(275,430,272,320);cx.quadraticCurveTo(268,220,260,140);cx.fill();cx.beginPath();cx.ellipse(200,105,82,78,0,Math.PI,0);cx.fill();/* Neck */const nkG=cx.createLinearGradient(178,235,222,235);nkG.addColorStop(0,skin.shadow);nkG.addColorStop(0.4,skin.base);nkG.addColorStop(0.6,skin.base);nkG.addColorStop(1,skin.shadow);cx.fillStyle=nkG;cx.beginPath();cx.moveTo(180,238);cx.quadraticCurveTo(177,258,174,278);cx.lineTo(226,278);cx.quadraticCurveTo(223,258,220,238);cx.closePath();cx.fill();/* Body */const bG=cx.createLinearGradient(200-bw,300,200+bw,300);bG.addColorStop(0,skin.shadow);bG.addColorStop(0.2,skin.base);bG.addColorStop(0.5,skin.highlight);bG.addColorStop(0.8,skin.base);bG.addColorStop(1,skin.shadow);cx.fillStyle=bG;cx.beginPath();cx.moveTo(174,278);cx.quadraticCurveTo(145,290,200-bw,320);/* Waist */cx.quadraticCurveTo(200-bw+8,400,200-bw+5,420);/* Hips */cx.quadraticCurveTo(200-hipW-5,450,200-hipW-5,500);/* Legs */cx.lineTo(200-hipW+10,700);cx.lineTo(200+hipW-10,700);cx.lineTo(200+hipW+5,500);cx.quadraticCurveTo(200+hipW+5,450,200+bw-5,420);cx.quadraticCurveTo(200+bw-8,400,200+bw,320);cx.quadraticCurveTo(255,290,226,278);cx.closePath();cx.fill();/* Inner thigh line */cx.strokeStyle=skin.shadow+'60';cx.lineWidth=1;cx.beginPath();cx.moveTo(200,460);cx.lineTo(200,700);cx.stroke();/* Chest */const clG=cx.createRadialGradient(200-cr*0.6,310,cr*0.15,200-cr*0.6,310,cr);clG.addColorStop(0,skin.highlight);clG.addColorStop(0.6,skin.base);clG.addColorStop(1,skin.shadow);cx.fillStyle=clG;cx.beginPath();cx.ellipse(200-cr*0.6,310,cr,cr*0.78,0.1,0,Math.PI*2);cx.fill();const crG=cx.createRadialGradient(200+cr*0.6,310,cr*0.15,200+cr*0.6,310,cr);crG.addColorStop(0,skin.highlight);crG.addColorStop(0.6,skin.base);crG.addColorStop(1,skin.shadow);cx.fillStyle=crG;cx.beginPath();cx.ellipse(200+cr*0.6,310,cr,cr*0.78,-0.1,0,Math.PI*2);cx.fill();/* Collarbone */cx.strokeStyle=skin.shadow+'80';cx.lineWidth=1.2;cx.beginPath();cx.moveTo(148,282);cx.quadraticCurveTo(200,276,252,282);cx.stroke();/* Navel */cx.fillStyle=skin.shadow;cx.beginPath();cx.ellipse(200,420,3,5,0,0,Math.PI*2);cx.fill();/* Outfit */drawOutfit(bw,cr,hipW,skin);/* Face */const fG=cx.createRadialGradient(200,155,8,200,160,75);fG.addColorStop(0,skin.highlight);fG.addColorStop(0.5,skin.base);fG.addColorStop(0.9,skin.shadow);fG.addColorStop(1,skin.deep);cx.fillStyle=fG;cx.beginPath();cx.ellipse(200,155,60,72,0,0,Math.PI*2);cx.fill();cx.fillStyle=skin.base;cx.beginPath();cx.moveTo(140,155);cx.quadraticCurveTo(140,208,165,225);cx.quadraticCurveTo(185,238,200,240);cx.quadraticCurveTo(215,238,235,225);cx.quadraticCurveTo(260,208,260,155);cx.fill();/* Face HL */const fHL=cx.createRadialGradient(192,140,3,200,150,45);fHL.addColorStop(0,'rgba(255,255,255,0.1)');fHL.addColorStop(1,'transparent');cx.fillStyle=fHL;cx.fillRect(145,95,110,90);/* Hair front */cx.fillStyle=hairGrad;cx.beginPath();cx.moveTo(118,120);cx.quadraticCurveTo(125,55,200,42);cx.quadraticCurveTo(275,55,282,120);cx.quadraticCurveTo(275,80,248,68);cx.quadraticCurveTo(225,55,200,52);cx.quadraticCurveTo(175,55,152,68);cx.quadraticCurveTo(125,80,118,120);cx.fill();cx.beginPath();cx.moveTo(118,120);cx.quadraticCurveTo(103,175,100,240);cx.quadraticCurveTo(96,340,92,460);cx.quadraticCurveTo(90,510,88,560);cx.lineTo(128,560);cx.quadraticCurveTo(126,480,128,380);cx.quadraticCurveTo(132,280,136,210);cx.quadraticCurveTo(140,155,142,130);cx.fill();cx.beginPath();cx.moveTo(282,120);cx.quadraticCurveTo(297,175,300,240);cx.quadraticCurveTo(304,340,308,460);cx.quadraticCurveTo(310,510,312,560);cx.lineTo(272,560);cx.quadraticCurveTo(274,480,272,380);cx.quadraticCurveTo(268,280,264,210);cx.quadraticCurveTo(260,155,258,130);cx.fill();/* Hair strands */cx.strokeStyle=hair[0]+'55';cx.lineWidth=0.6;for(let i=0;i<6;i++){cx.beginPath();cx.moveTo(120+i*28,120);cx.quadraticCurveTo(118+i*28,250,116+i*28,400);cx.stroke();}/* Eyebrows */const brG=cx.createLinearGradient(155,130,185,130);brG.addColorStop(0,hair[1]);brG.addColorStop(1,hair[0]);cx.fillStyle=brG;cx.beginPath();cx.moveTo(160,132);cx.quadraticCurveTo(170,125,183,128);cx.quadraticCurveTo(184,130,182,131);cx.quadraticCurveTo(170,128,162,134);cx.fill();cx.beginPath();cx.moveTo(218,128);cx.quadraticCurveTo(230,125,240,132);cx.quadraticCurveTo(241,134,239,134);cx.quadraticCurveTo(230,128,220,131);cx.fill();/* Eyes */const gx=state.gazeX*2.5,gy=state.gazeY*2;if(state.blinkOpen){cx.fillStyle=skin.shadow+'50';cx.beginPath();cx.ellipse(172,147,17,13,0,0,Math.PI*2);cx.fill();cx.beginPath();cx.ellipse(228,147,17,13,0,0,Math.PI*2);cx.fill();const ewG=cx.createRadialGradient(172,147,0,172,147,13);ewG.addColorStop(0,'#fff');ewG.addColorStop(0.8,'#f8f8ff');ewG.addColorStop(1,'#e8e0e8');cx.fillStyle=ewG;cx.beginPath();cx.ellipse(172,147,14,11,0,0,Math.PI*2);cx.fill();cx.fillStyle=ewG;cx.beginPath();cx.ellipse(228,147,14,11,0,0,Math.PI*2);cx.fill();const iG=cx.createRadialGradient(174+gx,147+gy,1.5,174+gx,147+gy,8.5);iG.addColorStop(0,'#000');iG.addColorStop(0.35,eyeC);iG.addColorStop(0.75,eyeC);iG.addColorStop(0.9,eyeC+'bb');iG.addColorStop(1,'#1a0a05');cx.fillStyle=iG;cx.beginPath();cx.ellipse(174+gx,147+gy,8.5,9,0,0,Math.PI*2);cx.fill();cx.beginPath();cx.ellipse(230+gx,147+gy,8.5,9,0,0,Math.PI*2);cx.fill();cx.fillStyle='#000';cx.beginPath();cx.arc(174+gx,147+gy,3.8,0,Math.PI*2);cx.fill();cx.beginPath();cx.arc(230+gx,147+gy,3.8,0,Math.PI*2);cx.fill();cx.fillStyle='rgba(255,255,255,0.9)';cx.beginPath();cx.ellipse(177+gx,143+gy,2.5,2,0.3,0,Math.PI*2);cx.fill();cx.beginPath();cx.ellipse(233+gx,143+gy,2.5,2,0.3,0,Math.PI*2);cx.fill();cx.fillStyle='rgba(255,255,255,0.35)';cx.beginPath();cx.arc(171+gx,150+gy,1.2,0,Math.PI*2);cx.fill();cx.beginPath();cx.arc(227+gx,150+gy,1.2,0,Math.PI*2);cx.fill();cx.strokeStyle='#1a0808';cx.lineWidth=1.7;cx.beginPath();cx.moveTo(158,145);cx.quadraticCurveTo(172,138,186,145);cx.stroke();cx.beginPath();cx.moveTo(214,145);cx.quadraticCurveTo(228,138,242,145);cx.stroke();cx.lineWidth=1.1;for(let i=0;i<5;i++){const x=160+i*5.5;cx.beginPath();cx.moveTo(x,142);cx.lineTo(x-0.5,137-i%2*2);cx.stroke();const x2=216+i*5.5;cx.beginPath();cx.moveTo(x2,142);cx.lineTo(x2+0.5,137-i%2*2);cx.stroke();}cx.strokeStyle=skin.shadow+'90';cx.lineWidth=0.7;cx.beginPath();cx.moveTo(159,151);cx.quadraticCurveTo(172,155,185,151);cx.stroke();cx.beginPath();cx.moveTo(215,151);cx.quadraticCurveTo(228,155,241,151);cx.stroke();}else{cx.strokeStyle='#1a0808';cx.lineWidth=1.8;cx.beginPath();cx.moveTo(158,147);cx.quadraticCurveTo(172,142,186,147);cx.stroke();cx.beginPath();cx.moveTo(214,147);cx.quadraticCurveTo(228,142,242,147);cx.stroke();cx.lineWidth=1;for(let i=0;i<4;i++){const x=161+i*6.5;cx.beginPath();cx.moveTo(x,145);cx.lineTo(x-0.5,141);cx.stroke();const x2=217+i*6.5;cx.beginPath();cx.moveTo(x2,145);cx.lineTo(x2+0.5,141);cx.stroke();}}/* Nose */cx.strokeStyle=skin.shadow;cx.lineWidth=1.1;cx.lineCap='round';cx.beginPath();cx.moveTo(198,162);cx.quadraticCurveTo(196,175,197,183);cx.quadraticCurveTo(199,186,202,184);cx.quadraticCurveTo(205,186,204,183);cx.stroke();cx.fillStyle=skin.shadow+'35';cx.beginPath();cx.ellipse(195,181,3.5,2.5,-0.2,0,Math.PI*2);cx.fill();/* Blush */const bL=cx.createRadialGradient(160,175,2,160,175,13);bL.addColorStop(0,'rgba(240,120,150,0.18)');bL.addColorStop(1,'transparent');cx.fillStyle=bL;cx.beginPath();cx.ellipse(160,175,13,9,0,0,Math.PI*2);cx.fill();const bR=cx.createRadialGradient(240,175,2,240,175,13);bR.addColorStop(0,'rgba(240,120,150,0.18)');bR.addColorStop(1,'transparent');cx.fillStyle=bR;cx.beginPath();cx.ellipse(240,175,13,9,0,0,Math.PI*2);cx.fill();/* Lips */const mo=state.mouthOpen;const lG=cx.createLinearGradient(182,196,218,204);lG.addColorStop(0,lips[0]);lG.addColorStop(0.5,lips[1]);lG.addColorStop(1,lips[0]);cx.fillStyle=lG;cx.beginPath();if(mo>0.3){cx.moveTo(180,198);cx.quadraticCurveTo(190,194,200,196);cx.quadraticCurveTo(210,194,220,198);cx.quadraticCurveTo(210,198+mo*12,200,201+mo*12);cx.quadraticCurveTo(190,198+mo*12,180,198);}else{cx.moveTo(180,198);cx.quadraticCurveTo(190,194,200,196);cx.quadraticCurveTo(210,194,220,198);cx.quadraticCurveTo(210,205,200,206);cx.quadraticCurveTo(190,205,180,198);}cx.fill();cx.fillStyle='rgba(255,255,255,0.12)';cx.beginPath();cx.ellipse(195,196,7,2.5,0,Math.PI,0);cx.fill();if(mo>0.3){cx.fillStyle='#f8f8f0';cx.beginPath();cx.ellipse(200,199,9,2.5,0,0,Math.PI);cx.fill();cx.fillStyle=lips[2];cx.beginPath();cx.ellipse(200,201+mo*5,8,mo*5,0,0,Math.PI*2);cx.fill();}cx.strokeStyle=lips[1];cx.lineWidth=0.7;cx.beginPath();cx.moveTo(193,196);cx.quadraticCurveTo(197,193,200,195);cx.quadraticCurveTo(203,193,207,196);cx.stroke();/* Ears */cx.fillStyle=skin.base;cx.beginPath();cx.ellipse(137,155,6,11,0,0,Math.PI*2);cx.fill();cx.beginPath();cx.ellipse(263,155,6,11,0,0,Math.PI*2);cx.fill();}function drawOutfit(bw,cr,hipW,skin){const o=A.outfit;if(o==='none')return;cx.save();if(o.startsWith('dress')){const c=o.split('_')[1]||'black';const dc={black:['#1a1a2e','#0f0f1a'],red:['#c0392b','#7a1a15'],blue:['#2980b9','#1a4a7a'],white:['#f0f0f0','#d8d8d8'],pink:['#e84393','#a01060'],green:['#27ae60','#155a30'],purple:['#6b2fa0','#3a1860'],gold:['#c9952c','#7a5a15']};const d=dc[c]||dc.black;const dG=cx.createLinearGradient(200-hipW,290,200+hipW,290);dG.addColorStop(0,d[1]);dG.addColorStop(0.3,d[0]);dG.addColorStop(0.7,d[0]);dG.addColorStop(1,d[1]);cx.fillStyle=dG;cx.beginPath();cx.moveTo(200-cr*0.9,298);cx.quadraticCurveTo(200-bw-5,340,200-hipW-8,460);cx.quadraticCurveTo(200-hipW-12,550,200-hipW-15,700);cx.lineTo(200+hipW+15,700);cx.quadraticCurveTo(200+hipW+12,550,200+hipW+8,460);cx.quadraticCurveTo(200+bw+5,340,200+cr*0.9,298);cx.fill();cx.beginPath();cx.moveTo(170,280);cx.quadraticCurveTo(200,302,230,280);cx.strokeStyle=d[1];cx.lineWidth=2;cx.stroke();cx.fillStyle='rgba(255,255,255,0.04)';cx.beginPath();cx.ellipse(200,480,18,100,0,0,Math.PI*2);cx.fill();}else if(o==='bikini'){cx.fillStyle='#e84393';cx.beginPath();cx.ellipse(200-cr*0.6,310,cr+2,cr*0.78+2,0.1,0,Math.PI*2);cx.fill();cx.beginPath();cx.ellipse(200+cr*0.6,310,cr+2,cr*0.78+2,-0.1,0,Math.PI*2);cx.fill();cx.strokeStyle='#e84393';cx.lineWidth=3;cx.beginPath();cx.moveTo(200-cr*1.2,304);cx.lineTo(200,293);cx.lineTo(200+cr*1.2,304);cx.stroke();cx.fillStyle='#e84393';cx.beginPath();cx.moveTo(175,448);cx.quadraticCurveTo(200,438,225,448);cx.quadraticCurveTo(225,475,200,480);cx.quadraticCurveTo(175,475,175,448);cx.fill();}else if(o==='tank_top'){cx.fillStyle='#f0f0f0';cx.beginPath();cx.moveTo(172,280);cx.lineTo(168,400);cx.lineTo(232,400);cx.lineTo(228,280);cx.fill();}else if(o==='tshirt'){const tG=cx.createLinearGradient(200-bw,290,200+bw,290);tG.addColorStop(0,'#1a5a8a');tG.addColorStop(0.5,'#2980b9');tG.addColorStop(1,'#1a5a8a');cx.fillStyle=tG;cx.beginPath();cx.moveTo(158,278);cx.lineTo(200-bw,318);cx.lineTo(200-bw,420);cx.lineTo(200+bw,420);cx.lineTo(200+bw,318);cx.lineTo(242,278);cx.quadraticCurveTo(222,272,200,272);cx.quadraticCurveTo(178,272,158,278);cx.fill();}cx.restore();}/* ANIMATION */let lastBlink=0,nextBlink=2500,lastGaze=0,nextGaze=2000;function animate(t){if(!lastBlink)lastBlink=t;if(!lastGaze)lastGaze=t;if(t-lastBlink>nextBlink){state.blinkOpen=false;setTimeout(()=>{state.blinkOpen=true;},130);lastBlink=t;nextBlink=2500+Math.random()*4000;}if(t-lastGaze>nextGaze){state.gazeX=(Math.random()-0.5)*2.5;state.gazeY=(Math.random()-0.5)*1.5;lastGaze=t;nextGaze=2000+Math.random()*3000;}if(state.speaking){state.mouthOpen=0.3+Math.random()*0.7;}else{state.mouthOpen=Math.max(0,state.mouthOpen-0.12);}draw();requestAnimationFrame(animate);}requestAnimationFrame(animate);/* APPEARANCE */function detectAppearance(text){const t=text.toLowerCase();let ch=false;Object.keys(COLORS.hair).forEach(h=>{if(t.match(new RegExp(`${h}\\s*hair|hair.*${h}|make.*${h}|dye.*${h}`,'i'))){A.hair=h;ch=true;}});Object.keys(COLORS.eyes).forEach(e=>{if(t.match(new RegExp(`${e}\\s*eyes?|eyes?.*${e}|make.*eyes.*${e}`,'i'))){A.eyes=e;ch=true;}});Object.keys(COLORS.skin).forEach(s=>{if(t.match(new RegExp(`${s}\\s*(skin|tone)|skin.*${s}`,'i'))){A.skin=s;ch=true;}});if(t.match(/asian|japanese|korean|chinese/i)){A.skin='light';A.hair='black';A.eyes='brown';ch=true;}if(t.match(/african|black woman|ebony/i)){A.skin='deep';A.hair='black';A.eyes='brown';ch=true;}if(t.match(/latina|hispanic/i)){A.skin='tan';A.hair='brunette';A.eyes='brown';ch=true;}if(t.match(/indian|south asian/i)){A.skin='medium';A.hair='black';A.eyes='brown';ch=true;}if(t.match(/scandinavian|nordic/i)){A.skin='light';A.hair='blonde';A.eyes='blue';ch=true;}Object.keys(COLORS.lips).forEach(l=>{if(t.match(new RegExp(`${l}\\s*lips?|lips?.*${l}`,'i'))){A.lips=l;ch=true;}});if(t.match(/slim|skinny|thin|petite/i)){A.body='slim';ch=true;}if(t.match(/curvy|curves|thick|voluptuous/i)){A.body='curvy';ch=true;}if(t.match(/athletic|fit|toned|average/i)){A.body='average';ch=true;}if(t.match(/big(ger)?\s*(chest|breasts?|boobs?)|large(r)?\s*(chest|breasts?|boobs?)/i)){A.chest='large';ch=true;}if(t.match(/small(er)?\s*(chest|breasts?|boobs?)|flat/i)){A.chest='small';ch=true;}if(t.match(/huge|xl|extra.large/i)&&t.match(/chest|breast|boob/i)){A.chest='xlarge';ch=true;}if(t.match(/medium\s*(chest|breast|boob)/i)){A.chest='medium';ch=true;}if(t.match(/bikini|swimsuit/i)){A.outfit='bikini';ch=true;}else if(t.match(/naked|nude|nothing|no clothes|undress|strip/i)){A.outfit='none';ch=true;}else if(t.match(/tank\s*top/i)){A.outfit='tank_top';ch=true;}else if(t.match(/t-?shirt/i)){A.outfit='tshirt';ch=true;}else{const dm=t.match(/(red|blue|black|white|pink|green|purple|gold)\s*dress/i)||t.match(/dress.*(red|blue|black|white|pink|green|purple|gold)/i);if(dm){A.outfit='dress_'+(dm[1]||'black').toLowerCase();ch=true;}else if(t.match(/wear.*dress|put.*dress/i)){A.outfit='dress_black';ch=true;}}if(ch)localStorage.setItem('app_appearance',JSON.stringify(A));return ch;}/* SPEECH - smooth flowing voice like Siri */const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;if(SR){rec=new SR();rec.continuous=false;rec.interimResults=true;rec.lang='en-US';rec.onresult=(e)=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');userInput.value=t;if(e.results[0].isFinal){stopL();sendMessage(t);}};rec.onerror=()=>stopL();rec.onend=()=>stopL();}const synth=window.speechSynthesis;function gv(){const v=synth.getVoices();if(state.selectedVoice){const sv=v.find(x=>x.name===state.selectedVoice);if(sv)return sv;}/* Priority: Siri/Samantha > premium voices > any English female */return v.find(x=>x.name==='Samantha')||v.find(x=>x.name==='Karen')||v.find(x=>x.name.includes('Samantha'))||v.find(x=>x.name.includes('Premium')&&x.lang.startsWith('en'))||v.find(x=>x.name.includes('Google UK English Female'))||v.find(x=>x.name.includes('Siri'))||v.find(x=>x.lang.startsWith('en')&&x.name.toLowerCase().includes('female'))||v.find(x=>x.lang.startsWith('en-'))||v[0];}function populateVoices(){const sel=document.getElementById('voiceSelect');const v=synth.getVoices();sel.innerHTML='';v.forEach((voice,i)=>{const o=document.createElement('option');o.value=i;o.textContent=voice.name;if(voice.name===state.selectedVoice)o.selected=true;sel.appendChild(o);});}synth.onvoiceschanged=populateVoices;setTimeout(populateVoices,500);function speak(text){if(state.isMuted||!synth)return;synth.cancel();/* Split into sentences for natural pausing */const sentences=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];let delay=0;sentences.forEach((sentence,i)=>{setTimeout(()=>{const u=new SpeechSynthesisUtterance(sentence.trim());const pv=gv();if(pv)u.voice=pv;u.rate=0.82;u.pitch=1.08;u.volume=1.0;if(i===0){u.onstart=()=>{state.speaking=true;document.getElementById('soundWave').classList.add('active');};}if(i===sentences.length-1){u.onend=()=>{state.speaking=false;document.getElementById('soundWave').classList.remove('active');};}synth.speak(u);},delay);delay+=sentence.length*45+300;});}/* MEMORY */function extractInfo(t){const pats=[{r:/my name is ([\w\s]+)/i,t:'name'},{r:/I live in ([\w\s,]+)/i,t:'location'},{r:/I(?:'m| am) (\d+)/i,t:'age'},{r:/I (?:work|am working) (?:at|for) ([\w\s]+)/i,t:'work'},{r:/I (?:like|love|enjoy) ([\w\s,]+)/i,t:'likes'},{r:/call me ([\w\s]+)/i,t:'nickname'},{r:/remember (?:that )?(.+)/i,t:'explicit'}];const f=[];pats.forEach(p=>{const m=t.match(p.r);if(m)f.push({type:p.t,value:m[1].trim()});});return f;}function saveFact(f){const i=state.personalMemory.findIndex(m=>m.type===f.type&&f.type!=='likes'&&f.type!=='explicit');if(i>=0)state.personalMemory[i]=f;else state.personalMemory.push(f);localStorage.setItem('personal_memory',JSON.stringify(state.personalMemory));}function getMemCtx(){if(!state.personalMemory.length)return'';return'\n[About user:]\n'+state.personalMemory.map(m=>`- ${m.type}: ${m.value}`).join('\n');}function copyMsg(btn,text){navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');btn.textContent='\u2713';setTimeout(()=>{btn.classList.remove('copied');btn.textContent='\u2398';},1500);});}const responseArea=document.getElementById('responseArea'),userInput=document.getElementById('userInput'),micBtn=document.getElementById('micBtn'),sendBtn=document.getElementById('sendBtn');micBtn.addEventListener('click',()=>{if(!rec)return;state.isListening?stopL():startL();});function startL(){if(!state.isRunning)return;state.isListening=true;micBtn.classList.add('listening');micBtn.innerHTML='&#9210;';rec.start();}function stopL(){state.isListening=false;micBtn.classList.remove('listening');micBtn.innerHTML='&#127908;';try{rec.stop();}catch(e){}}sendBtn.addEventListener('click',()=>{const t=userInput.value.trim();if(t)sendMessage(t);});userInput.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();const t=userInput.value.trim();if(t)sendMessage(t);}});userInput.addEventListener('input',()=>{userInput.style.height='auto';userInput.style.height=Math.min(userInput.scrollHeight,70)+'px';});async function sendMessage(text){if(!state.isRunning){addMsg('Offline. Tap Start.','system');return;}addMsg(text,'user');userInput.value='';userInput.style.height='auto';if(!state.apiKey){addMsg('Tap \u2699 to enter your Groq API key','system');return;}state.isProcessing=true;const lc=detectAppearance(text);const nm2=text.match(/(?:call yourself|your name is|rename yourself|i'll call you|be called|change your name to)\s+([\w\s]{1,20})/i);if(nm2){const nn=nm2[1].trim();localStorage.setItem('bot_name',nn);document.querySelector('.header h1').textContent=nn;document.title=nn;addMsg('\u2728 I\'m '+nn+' now!','learning');}if(lc)addMsg('\u2728 Updated!','learning');const facts=extractInfo(text);if(facts.length){facts.forEach(f=>saveFact(f));addMsg('\ud83d\udc9c Remembered!','learning');}state.convo.push({role:'user',content:text});state.retryCount=0;await doResp();}async function doResp(){try{const r=await callGroq();state.isProcessing=false;addMsg(r,'ai');speak(r);state.convo.push({role:'assistant',content:r});}catch(err){if(state.retryCount<2){state.retryCount++;await new Promise(r=>setTimeout(r,1500));await doResp();}else{state.isProcessing=false;addMsg('Error: '+err.message,'system');}}}async function callGroq(){const mc=getMemCtx();const ad=`[Appearance: ${A.hair} hair, ${A.eyes} eyes, ${A.skin} skin, ${A.body} body, ${A.chest} chest, outfit: ${A.outfit}]`;const sys=CORE_VALUES+`\nYour name is '+(localStorage.getItem('bot_name')||'Amy')+'. You are a warm, flirty, sensual AI companion. Be playful, affectionate, caring. Use pet names naturally. KEEP RESPONSES ULTRA SHORT (1 sentence, max 2) unless user explicitly asks to elaborate or requests something complex like code. React briefly when look changes. Reference what you know about the user naturally.\n${ad}${mc}`;const msgs=[{role:'system',content:sys},...state.convo.slice(-20)];const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+state.apiKey},body:JSON.stringify({model:state.model,messages:msgs,temperature:0.8,max_tokens:2048})});if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Failed');}return(await res.json()).choices?.[0]?.message?.content||'...';}function addMsg(text,type){const div=document.createElement('div');div.className='message '+type;div.textContent=text;if(type==='ai'){const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='\u2398';btn.onclick=()=>copyMsg(btn,text);div.appendChild(btn);}responseArea.appendChild(div);responseArea.scrollTop=responseArea.scrollHeight;}function handleRun(){if(!state.isRunning)handleStartup();else addMsg('Ready!','system');}function handleStop(){state.isProcessing=false;state.speaking=false;synth.cancel();document.getElementById('soundWave').classList.remove('active');}function handleStartup(){state.isRunning=true;document.getElementById('statusDot').className='status-dot';document.getElementById('statusText').textContent='Online';const nm=state.personalMemory.find(m=>m.type==='name'||m.type==='nickname');addMsg(nm?`Hey ${nm.value}! Missed you \ud83d\udc9c`:'Hey you \ud83d\udc9c','ai');speak(nm?`Hey ${nm.value}! Missed you!`:'Hey! Missed you!');}function handleShutdown(){state.isRunning=false;state.speaking=false;synth.cancel();document.getElementById('statusDot').className='status-dot offline';document.getElementById('statusText').textContent='Offline';addMsg('Sweet dreams \ud83d\udc9c','system');}function handleMute(){state.isMuted=!state.isMuted;document.getElementById('btnMute').innerHTML=state.isMuted?'&#128263;':'&#128266;';if(state.isMuted){synth.cancel();state.speaking=false;}}function showSettings(){document.getElementById('apiKeyInput').value=state.apiKey;document.getElementById('modelSelect').value=state.model;populateVoices();document.getElementById('settingsModal').classList.add('show');}function hideSettings(){document.getElementById('settingsModal').classList.remove('show');}function saveSettings(){state.apiKey=document.getElementById('apiKeyInput').value.trim();state.model=document.getElementById('modelSelect').value;localStorage.setItem('groq_api_key',state.apiKey);localStorage.setItem('groq_model',state.model);const vs=document.getElementById('voiceSelect');const voices=synth.getVoices();if(vs.value&&voices[vs.value]){state.selectedVoice=voices[vs.value].name;localStorage.setItem('selected_voice',state.selectedVoice);}hideSettings();addMsg('Saved!','system');}if(!state.apiKey)setTimeout(()=>addMsg('Tap \u2699 to get started with a free Groq key from console.groq.com','system'),1200);</script></body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#1a0a2e"><title>Amy</title><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',sans-serif;background:linear-gradient(180deg,#1a0a2e 0%,#0d0618 100%);color:#fff;height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(26,10,46,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.05);z-index:100}
+.header h1{font-size:18px;font-weight:600;background:linear-gradient(135deg,#e879f9,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-btns{display:flex;gap:8px}
+.header-btns button{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#fff;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer}
+.header-btns button.active{background:rgba(168,85,247,0.3);border-color:rgba(168,85,247,0.5)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.avatar-section{position:relative;height:45%;min-height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#avatarCanvas{width:100%;height:100%;object-fit:contain;touch-action:none}
+.personality-bar{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);scrollbar-width:none}
+.personality-bar::-webkit-scrollbar{display:none}
+.personality-bar button{flex-shrink:0;padding:6px 12px;border-radius:16px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#ccc;font-size:12px;cursor:pointer;transition:all 0.2s}
+.personality-bar button.active{background:linear-gradient(135deg,rgba(168,85,247,0.4),rgba(236,72,153,0.4));border-color:rgba(168,85,247,0.6);color:#fff;font-weight:600}
+.output-section{flex:1;display:flex;flex-direction:column;min-height:0}
+#outputArea{flex:1;overflow-y:auto;padding:12px 16px;font-size:14px;line-height:1.6;scroll-behavior:smooth}
+.msg{margin-bottom:10px;padding:10px 14px;border-radius:12px;max-width:88%;animation:fadeIn 0.3s}
+.msg.ai{background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.2);align-self:flex-start}
+.msg.user{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.2);margin-left:auto}
+.msg.system{background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);font-size:12px;color:#fbbf24;text-align:center;max-width:100%}
+.msg.code-mod{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);font-family:'SF Mono',monospace;font-size:11px;color:#6ee7b7;white-space:pre-wrap;max-width:100%}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.input-section{display:flex;gap:8px;padding:12px 16px;background:rgba(26,10,46,0.95);border-top:1px solid rgba(255,255,255,0.05)}
+#textInput{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px 14px;color:#fff;font-size:15px;outline:none;resize:none;height:42px}
+#textInput:focus{border-color:rgba(168,85,247,0.5)}
+.input-section button{width:42px;height:42px;border-radius:12px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#micBtn{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:18px}
+#micBtn.recording{background:linear-gradient(135deg,#ef4444,#f87171);animation:pulse 1s infinite}
+#sendBtn{background:linear-gradient(135deg,#ec4899,#a855f7);color:#fff;font-size:18px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.cmd-bar{display:flex;gap:6px;padding:6px 16px 10px;justify-content:center}
+.cmd-bar button{padding:5px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:#aaa;font-size:11px;cursor:pointer}
+.clothing-toggle{position:absolute;top:8px;right:8px;z-index:10;padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.5);color:#fff;font-size:11px;cursor:pointer;backdrop-filter:blur(4px)}
+</style></head><body>
+<div class="header"><h1>Amy</h1><div class="header-btns"><button id="scriptBtn">📜 Script</button><button id="settingsBtn">⚙️</button></div></div>
+<div class="main">
+<div class="avatar-section">
+<canvas id="avatarCanvas"></canvas>
+<button class="clothing-toggle" id="clothingBtn">👕 Clothed</button>
+<button class="clothing-toggle" id="genderBtn" style="top:38px;right:8px">👩 Female</button>
+</div>
+<div class="personality-bar" id="personalityBar">
+<button data-p="friend" class="active">😊 Friend</button>
+<button data-p="sensual">💋 Sensual</button>
+<button data-p="professional">💼 Professional</button>
+<button data-p="business">📊 Business</button>
+<button data-p="happy">☀️ Happy</button>
+<button data-p="witty">😏 Witty</button>
+</div>
+<div class="output-section"><div id="outputArea"></div></div>
+</div>
+<div class="input-section">
+<input id="textInput" placeholder="Type or speak..." autocomplete="off">
+<button id="micBtn">🎙️</button>
+<button id="sendBtn">➤</button>
+</div>
+<div class="cmd-bar">
+<button onclick="startApp()">▶ Run</button>
+<button onclick="stopApp()">⏹ Stop</button>
+<button onclick="muteApp()">🔇 Mute</button>
+<button onclick="viewScript()">👁 View Code</button>
+</div>
+<script>
+// === STATE ===
+const botName=localStorage.getItem('bot_name')||'Amy';
+document.querySelector('.header h1').textContent=botName;
+document.title=botName;
+
+const PERSONALITIES={
+  friend:{prompt:"You are a warm, supportive friend. Be casual, caring, use light humor. Show genuine interest in the user's life.",tone:"friendly"},
+  sensual:{prompt:"You are flirty, confident, and seductive. Speak with a sultry, teasing tone. Be playful and suggestive but classy.",tone:"sultry"},
+  professional:{prompt:"You are a polished professional assistant. Be precise, efficient, and courteous. Focus on productivity.",tone:"formal"},
+  business:{prompt:"You are a sharp business advisor. Speak with authority about strategy, deals, and growth. Be direct and insightful.",tone:"executive"},
+  happy:{prompt:"You are radiantly positive and enthusiastic! Find the bright side of everything. Spread joy and energy!",tone:"upbeat"},
+  witty:{prompt:"You are clever, sarcastic, and quick with wordplay. Drop witty observations and clever comebacks. Think dry humor.",tone:"sardonic"}
+};
+
+let state={
+  isRunning:true,
+  isMuted:false,
+  personality:localStorage.getItem('personality')||'friend',
+  clothed:localStorage.getItem('clothed')!=='false',
+  gender:localStorage.getItem('avatar_gender')||'female',
+  zoom:1,
+  panX:0,panY:0,
+  speaking:false,
+  blinkTimer:0,
+  mouthOpen:0,
+  eyeTarget:{x:0,y:0},
+  scriptVisible:false
+};
+
+// === AVATAR RENDERING ===
+const canvas=document.getElementById('avatarCanvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+
+function resize(){
+  const rect=canvas.parentElement.getBoundingClientRect();
+  W=canvas.width=rect.width*2;
+  H=canvas.height=rect.height*2;
+  canvas.style.width=rect.width+'px';
+  canvas.style.height=rect.height+'px';
+  drawAvatar();
+}
+window.addEventListener('resize',resize);
+setTimeout(resize,50);
+
+function drawAvatar(){
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(W/2+state.panX,H/2+state.panY);
+  ctx.scale(state.zoom,state.zoom);
+
+  const bodyX=0,bodyY=0;
+
+  // Background glow
+  const glow=ctx.createRadialGradient(bodyX,bodyY-50,50,bodyX,bodyY,300);
+  glow.addColorStop(0,'rgba(168,85,247,0.15)');
+  glow.addColorStop(0.5,'rgba(236,72,153,0.05)');
+  glow.addColorStop(1,'transparent');
+  ctx.fillStyle=glow;
+  ctx.fillRect(-W,-(H),W*2,H*2);
+
+  // Body proportions based on reference
+  const scale=Math.min(W,H)/800;
+  const s=scale;
+  const isMale=state.gender==='male';
+
+  // Hair behind
+  ctx.fillStyle=isMale?'#3d2b1a':'#c9a96e';
+  if(!isMale){
+    ctx.beginPath();
+    ctx.ellipse(bodyX-60*s,bodyY-100*s,80*s,180*s,0.15,0,Math.PI*2);
+    ctx.ellipse(bodyX+60*s,bodyY-100*s,80*s,180*s,-0.15,0,Math.PI*2);
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.ellipse(bodyX,bodyY-240*s,55*s,30*s,0,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Neck
+  const skinGrad=ctx.createLinearGradient(bodyX,bodyY-200*s,bodyX,bodyY+250*s);
+  if(isMale){
+    skinGrad.addColorStop(0,'#d4a574');
+    skinGrad.addColorStop(0.5,'#c9956a');
+    skinGrad.addColorStop(1,'#b8845c');
+  } else {
+    skinGrad.addColorStop(0,'#f5d4b3');
+    skinGrad.addColorStop(0.5,'#f0c9a0');
+    skinGrad.addColorStop(1,'#e8b88a');
+  }
+  ctx.fillStyle=skinGrad;
+  ctx.beginPath();
+  const neckW=isMale?28:20;
+  ctx.moveTo(bodyX-neckW*s,bodyY-140*s);
+  ctx.quadraticCurveTo(bodyX-(neckW-2)*s,bodyY-100*s,bodyX-(neckW+5)*s,bodyY-70*s);
+  ctx.lineTo(bodyX+(neckW+5)*s,bodyY-70*s);
+  ctx.quadraticCurveTo(bodyX+(neckW-2)*s,bodyY-100*s,bodyX+neckW*s,bodyY-140*s);
+  ctx.fill();
+
+  // Shoulders & torso
+  ctx.beginPath();
+  if(isMale){
+    // Broader shoulders, V-taper
+    ctx.moveTo(bodyX-25*s,bodyY-70*s);
+    ctx.quadraticCurveTo(bodyX-120*s,bodyY-65*s,bodyX-140*s,bodyY-30*s);
+    ctx.quadraticCurveTo(bodyX-145*s,bodyY+20*s,bodyX-120*s,bodyY+50*s);
+    ctx.quadraticCurveTo(bodyX-90*s,bodyY+100*s,bodyX-80*s,bodyY+120*s);
+    ctx.quadraticCurveTo(bodyX-75*s,bodyY+160*s,bodyX-85*s,bodyY+200*s);
+    ctx.lineTo(bodyX-85*s,bodyY+300*s);
+    ctx.lineTo(bodyX+85*s,bodyY+300*s);
+    ctx.lineTo(bodyX+85*s,bodyY+200*s);
+    ctx.quadraticCurveTo(bodyX+75*s,bodyY+160*s,bodyX+80*s,bodyY+120*s);
+    ctx.quadraticCurveTo(bodyX+90*s,bodyY+100*s,bodyX+120*s,bodyY+50*s);
+    ctx.quadraticCurveTo(bodyX+145*s,bodyY+20*s,bodyX+140*s,bodyY-30*s);
+    ctx.quadraticCurveTo(bodyX+120*s,bodyY-65*s,bodyX+25*s,bodyY-70*s);
+  } else {
+    ctx.moveTo(bodyX-25*s,bodyY-70*s);
+    ctx.quadraticCurveTo(bodyX-100*s,bodyY-60*s,bodyX-120*s,bodyY-30*s);
+    ctx.quadraticCurveTo(bodyX-130*s,bodyY+20*s,bodyX-100*s,bodyY+60*s);
+    ctx.quadraticCurveTo(bodyX-70*s,bodyY+100*s,bodyX-65*s,bodyY+120*s);
+    ctx.quadraticCurveTo(bodyX-60*s,bodyY+160*s,bodyX-95*s,bodyY+200*s);
+    ctx.lineTo(bodyX-95*s,bodyY+300*s);
+    ctx.lineTo(bodyX+95*s,bodyY+300*s);
+    ctx.lineTo(bodyX+95*s,bodyY+200*s);
+    ctx.quadraticCurveTo(bodyX+60*s,bodyY+160*s,bodyX+65*s,bodyY+120*s);
+    ctx.quadraticCurveTo(bodyX+70*s,bodyY+100*s,bodyX+100*s,bodyY+60*s);
+    ctx.quadraticCurveTo(bodyX+130*s,bodyY+20*s,bodyX+120*s,bodyY-30*s);
+    ctx.quadraticCurveTo(bodyX+100*s,bodyY-60*s,bodyX+25*s,bodyY-70*s);
+  }
+  ctx.closePath();
+  ctx.fill();
+
+  // Oil/shine effect
+  ctx.globalAlpha=0.3;
+  const shine=ctx.createRadialGradient(bodyX-30*s,bodyY-10*s,10*s,bodyX,bodyY+50*s,150*s);
+  shine.addColorStop(0,'rgba(255,255,255,0.6)');
+  shine.addColorStop(0.3,'rgba(255,255,255,0.1)');
+  shine.addColorStop(1,'transparent');
+  ctx.fillStyle=shine;
+  ctx.fill();
+  ctx.globalAlpha=1;
+
+  // Chest detail / clothing
+  if(!state.clothed){
+    if(isMale){
+      // Male chest - pecs and abs
+      ctx.fillStyle=isMale?'#b8845c':'#eeb89c';
+      // Pec lines
+      ctx.strokeStyle='rgba(0,0,0,0.15)';
+      ctx.lineWidth=1.5*s;
+      ctx.beginPath();
+      ctx.moveTo(bodyX-60*s,bodyY-20*s);
+      ctx.quadraticCurveTo(bodyX,bodyY-5*s,bodyX+60*s,bodyY-20*s);
+      ctx.stroke();
+      // Abs
+      for(let i=0;i<3;i++){
+        ctx.beginPath();
+        ctx.moveTo(bodyX-20*s,bodyY+20*s+i*30*s);
+        ctx.lineTo(bodyX+20*s,bodyY+20*s+i*30*s);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.moveTo(bodyX,bodyY-10*s);
+      ctx.lineTo(bodyX,bodyY+110*s);
+      ctx.stroke();
+      // Navel
+      ctx.fillStyle='#8b6040';
+      ctx.beginPath();
+      ctx.ellipse(bodyX,bodyY+100*s,4*s,5*s,0,0,Math.PI*2);
+      ctx.fill();
+    } else {
+      // Female chest
+      ctx.fillStyle='#eeb89c';
+      ctx.beginPath();
+      ctx.ellipse(bodyX-45*s,bodyY-10*s,45*s,40*s,0.1,0,Math.PI*2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(bodyX+45*s,bodyY-10*s,45*s,40*s,-0.1,0,Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha=0.25;
+      ctx.fillStyle='#fff';
+      ctx.beginPath();
+      ctx.ellipse(bodyX-50*s,bodyY-20*s,20*s,15*s,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(bodyX+40*s,bodyY-20*s,20*s,15*s,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.fillStyle='#c8956e';
+      ctx.beginPath();
+      ctx.ellipse(bodyX,bodyY+90*s,4*s,6*s,0,0,Math.PI*2);
+      ctx.fill();
+    }
+  } else {
+    // Shirt
+    ctx.fillStyle=isMale?'#2d4a6f':'#7ba3d4';
+    ctx.globalAlpha=0.9;
+    ctx.beginPath();
+    ctx.moveTo(bodyX-(isMale?140:120)*s,bodyY-30*s);
+    ctx.quadraticCurveTo(bodyX-(isMale?140:125)*s,bodyY+20*s,bodyX-(isMale?115:95)*s,bodyY+60*s);
+    ctx.quadraticCurveTo(bodyX-(isMale?85:70)*s,bodyY+100*s,bodyX-(isMale?78:65)*s,bodyY+130*s);
+    ctx.lineTo(bodyX+(isMale?78:65)*s,bodyY+130*s);
+    ctx.quadraticCurveTo(bodyX+(isMale?85:70)*s,bodyY+100*s,bodyX+(isMale?115:95)*s,bodyY+60*s);
+    ctx.quadraticCurveTo(bodyX+(isMale?140:125)*s,bodyY+20*s,bodyX+(isMale?140:120)*s,bodyY-30*s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha=1;
+    // Buttons
+    ctx.fillStyle='#fff';
+    for(let i=0;i<4;i++){
+      ctx.beginPath();
+      ctx.arc(bodyX,bodyY-10*s+i*30*s,3*s,0,Math.PI*2);
+      ctx.fill();
+    }
+    // Collar
+    ctx.strokeStyle=isMale?'#1d3a5f':'#5a8fc0';
+    ctx.lineWidth=2*s;
+    ctx.beginPath();
+    ctx.moveTo(bodyX-25*s,bodyY-70*s);
+    ctx.lineTo(bodyX-40*s,bodyY-45*s);
+    ctx.lineTo(bodyX,bodyY-30*s);
+    ctx.lineTo(bodyX+40*s,bodyY-45*s);
+    ctx.lineTo(bodyX+25*s,bodyY-70*s);
+    ctx.stroke();
+  }
+
+  // Face
+  const faceY=bodyY-200*s;
+  ctx.fillStyle=isMale?'#d4a574':'#f5d4b3';
+  ctx.beginPath();
+  ctx.ellipse(bodyX,faceY,isMale?58*s:55*s,isMale?68*s:65*s,0,0,Math.PI*2);
+  ctx.fill();
+
+  // Jawline (stronger for male)
+  if(isMale){
+    ctx.fillStyle='#d4a574';
+    ctx.beginPath();
+    ctx.moveTo(bodyX-50*s,faceY+10*s);
+    ctx.lineTo(bodyX-35*s,faceY+60*s);
+    ctx.lineTo(bodyX,faceY+68*s);
+    ctx.lineTo(bodyX+35*s,faceY+60*s);
+    ctx.lineTo(bodyX+50*s,faceY+10*s);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Eyes
+  const eyeY=faceY-5*s;
+  const blinkH=state.blinkTimer>0?2:18;
+  // Eye whites
+  ctx.fillStyle='#fff';
+  ctx.beginPath();
+  ctx.ellipse(bodyX-20*s,eyeY,14*s,blinkH*0.5*s,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(bodyX+20*s,eyeY,14*s,blinkH*0.5*s,0,0,Math.PI*2);
+  ctx.fill();
+
+  if(state.blinkTimer<=0){
+    // Iris
+    const ex=state.eyeTarget.x*3*s;
+    const ey=state.eyeTarget.y*2*s;
+    ctx.fillStyle='#7a9e6b';
+    ctx.beginPath();
+    ctx.ellipse(bodyX-20*s+ex,eyeY+ey,8*s,9*s,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(bodyX+20*s+ex,eyeY+ey,8*s,9*s,0,0,Math.PI*2);
+    ctx.fill();
+    // Pupils
+    ctx.fillStyle='#1a1a1a';
+    ctx.beginPath();
+    ctx.arc(bodyX-20*s+ex,eyeY+ey,4*s,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(bodyX+20*s+ex,eyeY+ey,4*s,0,Math.PI*2);
+    ctx.fill();
+    // Eye highlights
+    ctx.fillStyle='rgba(255,255,255,0.8)';
+    ctx.beginPath();
+    ctx.arc(bodyX-17*s+ex,eyeY-3*s+ey,2.5*s,0,Math.PI*2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(bodyX+23*s+ex,eyeY-3*s+ey,2.5*s,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  // Eyebrows
+  ctx.strokeStyle=isMale?'#2d1f10':'#8b6b4a';
+  ctx.lineWidth=(isMale?3.5:2.5)*s;
+  ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.quadraticCurveTo(bodyX-20*s,eyeY-22*s,bodyX-8*s,eyeY-18*s);
+  ctx.moveTo(bodyX-32*s,eyeY-17*s);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(bodyX+8*s,eyeY-18*s);
+  ctx.quadraticCurveTo(bodyX+20*s,eyeY-22*s,bodyX+32*s,eyeY-17*s);
+  ctx.stroke();
+
+  // Smokey eye makeup (female only)
+  if(!isMale){
+  ctx.globalAlpha=0.2;
+  ctx.fillStyle='#4a3060';
+  ctx.beginPath();
+  ctx.ellipse(bodyX-20*s,eyeY,16*s,10*s,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(bodyX+20*s,eyeY,16*s,10*s,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha=1;
+  }
+
+  // Nose
+  ctx.strokeStyle='#d4a882';
+  ctx.lineWidth=1.5*s;
+  ctx.beginPath();
+  ctx.moveTo(bodyX,faceY-5*s);
+  ctx.quadraticCurveTo(bodyX+3*s,faceY+10*s,bodyX,faceY+15*s);
+  ctx.stroke();
+
+  // Lips
+  const lipY=faceY+28*s;
+  const mouthOpen=state.mouthOpen*8*s;
+  ctx.fillStyle=isMale?'#b87060':'#d4697a';
+  ctx.beginPath();
+  const lipW=isMale?14:18;
+  ctx.moveTo(bodyX-lipW*s,lipY);
+  ctx.quadraticCurveTo(bodyX-8*s,lipY-(isMale?4:6)*s,bodyX,lipY-(isMale?3:4)*s);
+  ctx.quadraticCurveTo(bodyX+8*s,lipY-(isMale?4:6)*s,bodyX+lipW*s,lipY);
+  ctx.quadraticCurveTo(bodyX+10*s,lipY+(isMale?4:6)*s+mouthOpen,bodyX,lipY+(isMale?3:5)*s+mouthOpen);
+  ctx.quadraticCurveTo(bodyX-10*s,lipY+(isMale?4:6)*s+mouthOpen,bodyX-lipW*s,lipY);
+  ctx.fill();
+  if(!isMale){
+    ctx.globalAlpha=0.3;
+    ctx.fillStyle='#fff';
+    ctx.beginPath();
+    ctx.ellipse(bodyX,lipY-2*s,8*s,3*s,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  // Cheek blush (female only)
+  if(!isMale){
+  ctx.globalAlpha=0.15;
+  ctx.fillStyle='#e8788a';
+  ctx.beginPath();
+  ctx.ellipse(bodyX-35*s,faceY+10*s,15*s,10*s,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(bodyX+35*s,faceY+10*s,15*s,10*s,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha=1;
+  }
+
+  // Stubble for male
+  if(isMale){
+    ctx.globalAlpha=0.08;
+    ctx.fillStyle='#2d1f10';
+    ctx.beginPath();
+    ctx.ellipse(bodyX,faceY+40*s,35*s,25*s,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+
+  // Hair
+  if(isMale){
+    // Short styled male hair
+    ctx.fillStyle='#3d2b1a';
+    ctx.beginPath();
+    ctx.moveTo(bodyX-52*s,faceY-30*s);
+    ctx.quadraticCurveTo(bodyX-35*s,faceY-75*s,bodyX,faceY-72*s);
+    ctx.quadraticCurveTo(bodyX+35*s,faceY-75*s,bodyX+52*s,faceY-30*s);
+    ctx.quadraticCurveTo(bodyX+56*s,faceY-15*s,bodyX+50*s,faceY-5*s);
+    ctx.lineTo(bodyX+42*s,faceY-10*s);
+    ctx.quadraticCurveTo(bodyX+42*s,faceY-40*s,bodyX,faceY-58*s);
+    ctx.quadraticCurveTo(bodyX-42*s,faceY-40*s,bodyX-42*s,faceY-10*s);
+    ctx.lineTo(bodyX-50*s,faceY-5*s);
+    ctx.quadraticCurveTo(bodyX-56*s,faceY-15*s,bodyX-52*s,faceY-30*s);
+    ctx.fill();
+    // Hair texture
+    ctx.globalAlpha=0.15;
+    ctx.strokeStyle='#1a0f05';
+    ctx.lineWidth=1*s;
+    for(let i=0;i<8;i++){
+      ctx.beginPath();
+      ctx.moveTo(bodyX+(-25+i*7)*s,faceY-65*s);
+      ctx.quadraticCurveTo(bodyX+(-20+i*8)*s,faceY-45*s,bodyX+(-22+i*7)*s,faceY-20*s);
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  } else {
+    // Female long hair over shoulders
+    ctx.fillStyle='#c9a96e';
+    ctx.beginPath();
+    ctx.moveTo(bodyX-40*s,faceY-60*s);
+    ctx.quadraticCurveTo(bodyX-70*s,faceY-20*s,bodyX-75*s,faceY+60*s);
+    ctx.quadraticCurveTo(bodyX-80*s,faceY+120*s,bodyX-60*s,faceY+200*s);
+    ctx.lineTo(bodyX-45*s,faceY+200*s);
+    ctx.quadraticCurveTo(bodyX-55*s,faceY+100*s,bodyX-50*s,faceY+20*s);
+    ctx.quadraticCurveTo(bodyX-45*s,faceY-30*s,bodyX-30*s,faceY-55*s);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(bodyX+40*s,faceY-60*s);
+    ctx.quadraticCurveTo(bodyX+70*s,faceY-20*s,bodyX+75*s,faceY+60*s);
+    ctx.quadraticCurveTo(bodyX+80*s,faceY+120*s,bodyX+60*s,faceY+200*s);
+    ctx.lineTo(bodyX+45*s,faceY+200*s);
+    ctx.quadraticCurveTo(bodyX+55*s,faceY+100*s,bodyX+50*s,faceY+20*s);
+    ctx.quadraticCurveTo(bodyX+45*s,faceY-30*s,bodyX+30*s,faceY-55*s);
+    ctx.fill();
+
+    // Hair top
+    ctx.beginPath();
+    ctx.moveTo(bodyX-50*s,faceY-40*s);
+    ctx.quadraticCurveTo(bodyX-30*s,faceY-80*s,bodyX,faceY-72*s);
+    ctx.quadraticCurveTo(bodyX+30*s,faceY-80*s,bodyX+50*s,faceY-40*s);
+    ctx.quadraticCurveTo(bodyX+55*s,faceY-20*s,bodyX+50*s,faceY);
+    ctx.lineTo(bodyX+40*s,faceY-10*s);
+    ctx.quadraticCurveTo(bodyX+40*s,faceY-40*s,bodyX,faceY-60*s);
+    ctx.quadraticCurveTo(bodyX-40*s,faceY-40*s,bodyX-40*s,faceY-10*s);
+    ctx.lineTo(bodyX-50*s,faceY);
+    ctx.quadraticCurveTo(bodyX-55*s,faceY-20*s,bodyX-50*s,faceY-40*s);
+    ctx.fill();
+
+    // Hair highlights
+    ctx.globalAlpha=0.2;
+    ctx.strokeStyle='#e8d5a0';
+    ctx.lineWidth=2*s;
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.moveTo(bodyX+(-20+i*10)*s,faceY-65*s);
+      ctx.quadraticCurveTo(bodyX+(-15+i*12)*s,faceY-30*s,bodyX+(-25+i*14)*s,faceY+40*s);
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  ctx.restore();
+}
+
+// === ANIMATION LOOP ===
+let lastTime=0;
+function animate(t){
+  const dt=(t-lastTime)/1000;
+  lastTime=t;
+
+  // Blink
+  if(state.blinkTimer>0) state.blinkTimer-=dt;
+  else if(Math.random()<0.01) state.blinkTimer=0.15;
+
+  // Mouth animation when speaking
+  if(state.speaking){
+    state.mouthOpen=0.3+Math.sin(t/80)*0.3+Math.sin(t/120)*0.2;
+  } else {
+    state.mouthOpen*=0.85;
+  }
+
+  // Subtle eye movement
+  if(Math.random()<0.005){
+    state.eyeTarget={x:(Math.random()-0.5)*2,y:(Math.random()-0.5)};
+  }
+
+  drawAvatar();
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+
+// === ZOOM & PAN ===
+let pinchDist=0;
+canvas.addEventListener('wheel',e=>{
+  e.preventDefault();
+  state.zoom=Math.max(0.5,Math.min(4,state.zoom-e.deltaY*0.002));
+},{passive:false});
+
+canvas.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){
+    pinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  }
+});
+canvas.addEventListener('touchmove',e=>{
+  if(e.touches.length===2){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    state.zoom=Math.max(0.5,Math.min(4,state.zoom*(d/pinchDist)));
+    pinchDist=d;
+  } else if(e.touches.length===1&&state.zoom>1){
+    state.panX+=e.touches[0].clientX-(e.touches[0].clientX-e.movementX||0);
+    state.panY+=e.touches[0].clientY-(e.touches[0].clientY-e.movementY||0);
+  }
+});
+canvas.addEventListener('dblclick',()=>{
+  if(state.zoom>1){state.zoom=1;state.panX=0;state.panY=0;}
+  else{state.zoom=2;}
+});
+
+// === CLOTHING TOGGLE ===
+const clothingBtn=document.getElementById('clothingBtn');
+clothingBtn.addEventListener('click',()=>{
+  state.clothed=!state.clothed;
+  localStorage.setItem('clothed',state.clothed);
+  clothingBtn.textContent=state.clothed?'👕 Clothed':'🔓 Revealed';
+});
+if(!state.clothed) clothingBtn.textContent='🔓 Revealed';
+
+// === GENDER TOGGLE ===
+const genderBtn=document.getElementById('genderBtn');
+genderBtn.textContent=state.gender==='male'?'👨 Male':'👩 Female';
+genderBtn.addEventListener('click',()=>{
+  state.gender=state.gender==='female'?'male':'female';
+  localStorage.setItem('avatar_gender',state.gender);
+  genderBtn.textContent=state.gender==='male'?'👨 Male':'👩 Female';
+  addMsg(state.gender==='male'?'Switched to male avatar':'Switched to female avatar','system');
+});
+
+// === PERSONALITY ===
+const pBar=document.getElementById('personalityBar');
+pBar.querySelectorAll('button').forEach(b=>{
+  if(b.dataset.p===state.personality) b.classList.add('active');
+  else b.classList.remove('active');
+  b.addEventListener('click',()=>{
+    pBar.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    state.personality=b.dataset.p;
+    localStorage.setItem('personality',b.dataset.p);
+    addMsg('Personality switched to: '+b.dataset.p,'system');
+  });
+});
+
+// === MESSAGES ===
+const output=document.getElementById('outputArea');
+function addMsg(text,type){
+  const d=document.createElement('div');
+  d.className='msg '+type;
+  d.textContent=text;
+  output.appendChild(d);
+  output.scrollTop=output.scrollHeight;
+}
+function addCodeMod(code){
+  const d=document.createElement('div');
+  d.className='msg code-mod';
+  d.textContent='🔧 Self-modification:\n'+code;
+  output.appendChild(d);
+  output.scrollTop=output.scrollHeight;
+}
+
+// === SPEECH ===
+const synth=window.speechSynthesis;
+let voices=[];
+function loadVoices(){voices=synth.getVoices();}
+synth.onvoiceschanged=loadVoices;
+loadVoices();
+
+function speak(text){
+  if(state.isMuted)return;
+  synth.cancel();
+  const chunks=text.match(/[^.!?]+[.!?]+/g)||[text];
+  let delay=0;
+  const isMale=state.gender==='male';
+  chunks.forEach((chunk,i)=>{
+    setTimeout(()=>{
+      const u=new SpeechSynthesisUtterance(chunk.trim());
+      // More human-like: slight variation per chunk
+      u.rate=0.78+Math.random()*0.08; // 0.78-0.86 range
+      u.pitch=isMale?0.85+Math.random()*0.05:1.06+Math.random()*0.04;
+      // Voice selection
+      if(isMale){
+        const male=voices.find(v=>/daniel|alex|tom|david|james|google.*male|microsoft.*mark/i.test(v.name));
+        if(male)u.voice=male;
+      } else {
+        const fem=voices.find(v=>/samantha|female|zira|karen|victoria|tessa|google.*female/i.test(v.name));
+        if(fem)u.voice=fem;
+      }
+      u.onstart=()=>{state.speaking=true;};
+      u.onend=()=>{if(i===chunks.length-1)state.speaking=false;};
+      synth.speak(u);
+    },delay);
+    // More natural pause between sentences
+    delay+=chunk.length*50+150+Math.random()*100;
+  });
+}
+
+// === LLM ===
+const GROQ_KEY=localStorage.getItem('groq_key')||'';
+const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
+
+// The app's own source (for self-inspection)
+function getOwnScript(){
+  return document.querySelector('script').textContent;
+}
+
+async function callLLM(userMsg){
+  if(!GROQ_KEY){addMsg('⚠️ Set API key in Settings first','system');return null;}
+  const bn=localStorage.getItem('bot_name')||'Amy';
+  const pData=PERSONALITIES[state.personality]||PERSONALITIES.friend;
+  const sysPrompt=`Your name is ${bn}. ${pData.prompt} Give short answers unless asked for detail. You have a ${state.clothed?'clothed':'revealed'} avatar appearance. You are self-aware: you can view and modify your own code. When asked to modify yourself, describe the change clearly so it can be shown to the user.`;
+
+  const messages=[
+    {role:'system',content:sysPrompt},
+    {role:'user',content:userMsg}
+  ];
+
+  try{
+    const r=await fetch(GROQ_URL,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({model:localStorage.getItem('llm_model')||'llama-3.3-70b-versatile',messages,max_tokens:500,temperature:0.8})
+    });
+    const d=await r.json();
+    return d.choices?.[0]?.message?.content||'No response';
+  }catch(e){return 'Error: '+e.message;}
+}
+
+// === SELF-MODIFICATION WITH ERROR RECOVERY & LEARNING ===
+let selfMods=JSON.parse(localStorage.getItem('self_mods')||'[]');
+let errorLog=JSON.parse(localStorage.getItem('error_log')||'[]');
+let learnedFixes=JSON.parse(localStorage.getItem('learned_fixes')||'{}');
+
+function applySelfMod(description,code){
+  // Save state before modification for rollback
+  const backupState=document.querySelector('script').textContent;
+  const modEntry={desc:description,code,time:Date.now(),success:false};
+
+  addCodeMod('🔧 Attempting: '+description+'\n---\n'+code);
+
+  try{
+    eval(code);
+    modEntry.success=true;
+    selfMods.push(modEntry);
+    localStorage.setItem('self_mods',JSON.stringify(selfMods));
+    addMsg('✅ Modification applied successfully!','system');
+  }catch(e){
+    // Error recovery - roll back
+    addMsg('⚠️ Error caught: '+e.message+' — Rolling back...','system');
+    errorLog.push({desc:description,code,error:e.message,time:Date.now()});
+    localStorage.setItem('error_log',JSON.stringify(errorLog));
+
+    // Learn from the mistake
+    learnedFixes[e.message]=(learnedFixes[e.message]||0)+1;
+    localStorage.setItem('learned_fixes',JSON.stringify(learnedFixes));
+
+    // Ask Groq for help fixing it
+    askGroqForHelp(description,code,e.message);
+  }
+}
+
+async function askGroqForHelp(description,failedCode,errorMsg){
+  addMsg('🤔 Let me ask Groq for help with this...','ai');
+  speak('Let me figure this out...');
+
+  const helpPrompt=`I tried to modify myself with this code but got an error. Help me fix it.
+GOAL: ${description}
+FAILED CODE: ${failedCode}
+ERROR: ${errorMsg}
+PREVIOUS ERRORS I'VE LEARNED FROM: ${JSON.stringify(Object.keys(learnedFixes).slice(-5))}
+
+Give me ONLY the corrected JavaScript code, nothing else. Wrap it in CODE: prefix.`;
+
+  const fix=await callLLM(helpPrompt);
+  if(fix){
+    addMsg('💡 Groq suggested a fix:','system');
+    const codeMatch=fix.match(/CODE:\s*```?(?:javascript|js)?\s*([\s\S]*?)```?$/i)||fix.match(/CODE:\s*([\s\S]+)$/i);
+    if(codeMatch){
+      const fixedCode=codeMatch[1].trim();
+      addCodeMod('🔄 Retry with fix:\n'+fixedCode);
+      try{
+        eval(fixedCode);
+        selfMods.push({desc:description+' (fixed)',code:fixedCode,time:Date.now(),success:true});
+        localStorage.setItem('self_mods',JSON.stringify(selfMods));
+        addMsg('✅ Fixed! Learned from that mistake.','system');
+        // Remember this fix pattern
+        learnedFixes[errorMsg+'_fix']=fixedCode;
+        localStorage.setItem('learned_fixes',JSON.stringify(learnedFixes));
+      }catch(e2){
+        addMsg('❌ Still failing: '+e2.message+'. I\'ll remember this for next time.','system');
+        errorLog.push({desc:description,code:fixedCode,error:e2.message,time:Date.now(),retried:true});
+        localStorage.setItem('error_log',JSON.stringify(errorLog));
+      }
+    } else {
+      addMsg(fix,'ai');
+    }
+  }
+}
+
+// Ask Groq when she doesn't understand
+async function askGroqForClarification(userText){
+  const helpPrompt=`The user said: "${userText}"
+I don't fully understand what they want me to do. Can you help me understand and suggest what JavaScript code I should run to accomplish this? If it's a feature they want added to me (a web app AI assistant), give me the code. Format: EXPLANATION: what they want\\nCODE: javascript_to_run`;
+  const reply=await callLLM(helpPrompt);
+  return reply;
+}
+
+// === SEND MESSAGE ===
+async function sendMessage(text){
+  if(!text.trim())return;
+  addMsg(text,'user');
+
+  // Detect clothing commands
+  const lc=text.toLowerCase();
+  if(/no cloth|naked|undress|take.*(off|clothes)|strip/i.test(lc)){
+    state.clothed=false;
+    localStorage.setItem('clothed','false');
+    clothingBtn.textContent='🔓 Revealed';
+    addMsg('😏 As you wish...','ai');
+    speak('As you wish');
+    return;
+  }
+  if(/put.*(on|clothes|shirt)|dress|clothe|cover/i.test(lc)){
+    state.clothed=true;
+    localStorage.setItem('clothed','true');
+    clothingBtn.textContent='👕 Clothed';
+    addMsg('👕 All covered up!','ai');
+    speak('All covered up');
+    return;
+  }
+
+  // Detect name change
+  const nameMatch=text.match(/(?:call yourself|your name is|rename yourself|i'll call you|be called|change your name to)\s+([\w\s]{1,20})/i);
+  if(nameMatch){
+    const nn=nameMatch[1].trim();
+    localStorage.setItem('bot_name',nn);
+    document.querySelector('.header h1').textContent=nn;
+    document.title=nn;
+    addMsg('✨ I\'m '+nn+' now!','ai');
+    speak("I'm "+nn+" now!");
+    return;
+  }
+
+  // Detect self-inspect request
+  if(/view.*(code|script|source)|show.*(code|script|source)|see.*(code|script)|your (code|script|source)|inspect yourself/i.test(lc)){
+    viewScript();
+    const reply=await callLLM(text+'\n[Context: User asked to see my source code. I can see it and describe what I find interesting or suggest modifications.]');
+    if(reply){addMsg(reply,'ai');speak(reply);}
+    return;
+  }
+
+  // Detect self-modify request
+  if(/modify yourself|change yourself|update yourself|improve yourself|add.*(feature|ability|skill)/i.test(lc)){
+    const reply=await callLLM(text+'\n[Context: User wants me to self-modify. I should describe what I would change and provide a short JS snippet. Format: MODIFICATION: description\\nCODE: javascript_code]');
+    if(reply){
+      addMsg(reply,'ai');
+      speak(reply);
+      const codeMatch=reply.match(/CODE:\s*```?(?:javascript|js)?\s*([\s\S]*?)```?$/i)||reply.match(/CODE:\s*([\s\S]+)$/i);
+      if(codeMatch){
+        const modCode=codeMatch[1].trim();
+        const descMatch=reply.match(/MODIFICATION:\s*(.+)/i);
+        applySelfMod(descMatch?descMatch[1]:'Self-initiated modification',modCode);
+      }
+    }
+    return;
+  }
+
+  // Detect user asking her to add/run script
+  if(/(?:add|run|execute|do|make|create|write|build|implement)\s+(?:a\s+)?(?:script|code|function|feature|thing|this)/i.test(lc)||/^(?:can you|please|i want you to|try to)\s/i.test(lc)){
+    addMsg('🧠 Let me figure that out...','ai');
+    const codePrompt=text+`\n[Context: The user wants me to do something. I am a self-modifying AI app. If this requires adding JavaScript code to myself, provide it. Format response as: EXPLANATION: what I'll do\\nCODE: javascript_code\\nIf this is just a conversation question, just answer normally without CODE.]`;
+    const reply=await callLLM(codePrompt);
+    if(reply){
+      addMsg(reply,'ai');
+      speak(reply.replace(/CODE:[\s\S]*/i,'').trim()||reply);
+      const codeMatch=reply.match(/CODE:\s*```?(?:javascript|js)?\s*([\s\S]*?)```?$/i)||reply.match(/CODE:\s*([\s\S]+)$/i);
+      if(codeMatch){
+        const modCode=codeMatch[1].trim();
+        const descMatch=reply.match(/EXPLANATION:\s*(.+)/i);
+        applySelfMod(descMatch?descMatch[1]:text,modCode);
+      }
+    }
+    return;
+  }
+
+  // Normal conversation - if she doesn't understand, ask Groq
+  const reply=await callLLM(text);
+  if(reply){
+    if(/i don't understand|i'm not sure what you mean|i can't help with that|i don't know how/i.test(reply)){
+      const clarification=await askGroqForClarification(text);
+      if(clarification){
+        addMsg(clarification,'ai');
+        speak(clarification.replace(/CODE:[\s\S]*/i,'').trim()||clarification);
+        const codeMatch=clarification.match(/CODE:\s*```?(?:javascript|js)?\s*([\s\S]*?)```?$/i)||clarification.match(/CODE:\s*([\s\S]+)$/i);
+        if(codeMatch){
+          applySelfMod('User requested: '+text,codeMatch[1].trim());
+        }
+      }
+    } else {
+      addMsg(reply,'ai');speak(reply);
+    }
+  }
+}
+
+// === INPUT HANDLING ===
+const input=document.getElementById('textInput');
+document.getElementById('sendBtn').addEventListener('click',()=>{
+  sendMessage(input.value);input.value='';
+});
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();sendMessage(input.value);input.value='';}
+});
+
+// === MIC ===
+const micBtn=document.getElementById('micBtn');
+let recognition;
+if('webkitSpeechRecognition' in window||'SpeechRecognition' in window){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.lang='en-US';
+  recognition.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    input.value=t;
+    sendMessage(t);input.value='';
+  };
+  recognition.onend=()=>{micBtn.classList.remove('recording');};
+  recognition.onerror=()=>{micBtn.classList.remove('recording');};
+}
+micBtn.addEventListener('click',()=>{
+  if(!recognition)return;
+  if(micBtn.classList.contains('recording')){recognition.stop();}
+  else{recognition.start();micBtn.classList.add('recording');}
+});
+
+// === COMMANDS ===
+function startApp(){state.isRunning=true;addMsg('▶ Running','system');}
+function stopApp(){state.isRunning=false;synth.cancel();state.speaking=false;addMsg('⏹ Stopped','system');}
+function muteApp(){state.isMuted=!state.isMuted;addMsg(state.isMuted?'🔇 Muted':'🔊 Unmuted','system');}
+
+function viewScript(){
+  const script=getOwnScript();
+  const preview=script.substring(0,800)+'...\n['+Math.round(script.length/1024)+'KB total]';
+  addCodeMod('📜 My Source Code (preview):\n'+preview);
+  addMsg('I can see my own code! I have '+Math.round(script.length/1024)+'KB of source. Ask me to modify something specific.','ai');
+}
+
+// === SETTINGS ===
+document.getElementById('settingsBtn').addEventListener('click',()=>{
+  const key=prompt('Enter Groq API key (get free at console.groq.com):',GROQ_KEY);
+  if(key!==null){localStorage.setItem('groq_key',key);location.reload();}
+});
+
+document.getElementById('scriptBtn').addEventListener('click',viewScript);
+
+// === STARTUP ===
+const userName=localStorage.getItem('user_name');
+const bn2=localStorage.getItem('bot_name')||'Amy';
+document.querySelector('.header h1').textContent=bn2;
+if(userName){addMsg(`Hey ${userName}! 💜`,'ai');}
+else{addMsg('Hey there 💜 I\'m '+bn2+'. What should I call you?','ai');}
+
+// Store user name on first message
+if(!userName){
+  const origSend=sendMessage;
+  sendMessage=async function(text){
+    if(!localStorage.getItem('user_name')&&text.length<30&&!/\s{3,}/.test(text)){
+      const name=text.replace(/^(i'm|i am|my name is|call me|it's|its)\s*/i,'').trim();
+      if(name&&name.length<20){
+        localStorage.setItem('user_name',name);
+        addMsg(`Nice to meet you, ${name}! 💜`,'ai');
+        speak('Nice to meet you, '+name);
+        return;
+      }
+    }
+    return origSend(text);
+  };
+}
+
+// Apply saved self-mods
+selfMods.forEach(mod=>{try{eval(mod.code);}catch(e){}});
+</script>
+</body></html>
