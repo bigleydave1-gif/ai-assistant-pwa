@@ -7,8 +7,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .header-btns button{background:rgba(180,100,255,0.2);border:1px solid rgba(180,100,255,0.3);color:#e0b0ff;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer}
 .header-btns button.active{background:rgba(180,100,255,0.5);border-color:#b464ff}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
-.avatar-container{position:relative;width:100%;height:45vh;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
-.avatar-canvas{transition:transform 0.2s ease}
+.avatar-container{position:relative;width:100%;height:40vh;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at center,rgba(80,40,120,0.3) 0%,transparent 70%)}
+.avatar-img{max-width:100%;max-height:100%;object-fit:contain;transition:transform 0.15s ease-out;border-radius:12px;user-select:none;-webkit-user-drag:none}
+.avatar-picker{display:none;position:absolute;top:0;left:0;right:0;z-index:50;background:rgba(10,0,20,0.95);padding:12px;border-bottom:2px solid rgba(180,100,255,0.3);backdrop-filter:blur(10px)}
+.av-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.av-choice{text-align:center;cursor:pointer;border:2px solid rgba(180,100,255,0.3);border-radius:12px;padding:8px;transition:all 0.2s}
+.av-choice.active{border-color:#ff69b4;background:rgba(255,105,180,0.15)}
+.av-choice img{width:55px;height:55px;object-fit:cover;border-radius:8px}
+.av-choice span{display:block;font-size:10px;color:#e0b0ff;margin-top:4px}
+.zoom-slider{position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:6px}
+.zoom-slider input[type=range]{writing-mode:vertical-lr;direction:rtl;width:28px;height:120px;appearance:none;-webkit-appearance:none;background:transparent}
+.zoom-slider input[type=range]::-webkit-slider-track{width:4px;background:rgba(180,100,255,0.3);border-radius:2px}
+.zoom-slider input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;background:rgba(180,100,255,0.8);border-radius:50%;cursor:pointer;border:2px solid #fff}
+.zoom-slider button{width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(180,100,255,0.4);color:#fff;font-size:14px;cursor:pointer}
 .controls-bar{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;background:rgba(20,0,40,0.8);border-top:1px solid rgba(180,100,255,0.15);border-bottom:1px solid rgba(180,100,255,0.15)}
 .controls-bar button{flex-shrink:0;background:rgba(180,100,255,0.15);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:16px;padding:6px 12px;font-size:11px;cursor:pointer;white-space:nowrap}
 .controls-bar button.active{background:rgba(255,105,180,0.3);border-color:#ff69b4;color:#ffb3d9}
@@ -20,7 +31,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .msg.ai{align-self:flex-start;background:rgba(180,100,255,0.15);border:1px solid rgba(180,100,255,0.2);color:#e8d4ff}
 .msg.user{align-self:flex-end;background:rgba(255,105,180,0.2);border:1px solid rgba(255,105,180,0.3);color:#ffd4e8}
 .msg.system{align-self:center;background:rgba(255,200,50,0.1);border:1px solid rgba(255,200,50,0.2);color:#ffe4a0;font-size:12px;font-style:italic}
-.msg.code{align-self:flex-start;background:rgba(0,50,0,0.3);border:1px solid rgba(0,200,0,0.2);color:#a0ffa0;font-family:'SF Mono',monospace;font-size:11px}
+.msg.code{align-self:flex-start;background:rgba(0,50,0,0.3);border:1px solid rgba(0,200,0,0.2);color:#a0ffa0;font-family:'SF Mono',monospace;font-size:11px;max-width:95%}
 .input-area{display:flex;gap:8px;padding:12px;background:rgba(20,0,40,0.9);border-top:1px solid rgba(180,100,255,0.2)}
 .input-area input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(180,100,255,0.3);border-radius:20px;padding:10px 16px;color:#fff;font-size:15px;outline:none}
 .input-area input:focus{border-color:#b464ff}
@@ -28,287 +39,146 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 .cmd-bar{display:flex;gap:6px;padding:8px 12px;background:rgba(10,0,20,0.9);border-top:1px solid rgba(180,100,255,0.1);overflow-x:auto}
 .cmd-bar button{flex-shrink:0;background:rgba(180,100,255,0.2);border:1px solid rgba(180,100,255,0.3);color:#d9b3ff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
 .cmd-bar button:active{transform:scale(0.95)}
-.zoom-controls{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:4px;z-index:10}
-.zoom-controls button{width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(180,100,255,0.4);color:#fff;font-size:16px;cursor:pointer}
 </style></head><body>
-<div class="header"><h1>Amy</h1><div class="header-btns"><button id="btnGender" onclick="toggleGender()">♀</button><button id="btnClothes" onclick="toggleClothes()">👗</button><button onclick="openSettings()">⚙️</button></div></div>
+<div class="header"><h1>Amy</h1><div class="header-btns">
+<button id="btnAvatar" onclick="toggleAvatarPicker()">👤</button>
+<button id="btnClothes" onclick="toggleClothes()">👗</button>
+<button onclick="openSettings()">⚙️</button>
+</div></div>
 <div class="main">
-<div class="avatar-container" id="avatarContainer"><canvas id="avatarCanvas" class="avatar-canvas"></canvas><div class="zoom-controls"><button onclick="zoomAvatar(1.3)">+</button><button onclick="zoomAvatar(0.7)">−</button><button onclick="resetZoom()">⟲</button></div></div>
-<div class="controls-bar" id="controlsBar">
-<button class="active" id="btnPersonality" onclick="showPersonalities()">🎭 Personality</button>
+<div class="avatar-container" id="avatarContainer">
+<img id="avatarImg" class="avatar-img" src="img/female_unclothed.jpg" alt="Avatar">
+<div class="avatar-picker" id="avatarPicker">
+<div class="av-grid">
+<div class="av-choice active" onclick="chooseAvatar('blonde')" id="av_blonde"><img src="img/female_unclothed.jpg"><span>Blonde ♀</span></div>
+<div class="av-choice" onclick="chooseAvatar('brunette')" id="av_brunette"><img src="img/female_clothed.jpg"><span>Brunette ♀</span></div>
+<div class="av-choice" onclick="chooseAvatar('male')" id="av_male"><img src="img/male_clothed.jpg"><span>Athletic ♂</span></div>
+</div>
+</div>
+<div class="zoom-slider">
+<button onclick="zoomAvatar(1.3)">+</button>
+<input type="range" id="zoomRange" min="50" max="500" value="100" oninput="setZoom(this.value)">
+<button onclick="zoomAvatar(0.7)">−</button>
+<button onclick="resetZoom()">⟲</button>
+</div>
+</div>
+<div class="controls-bar">
+<button class="active" onclick="showPersonalities()">🎭 Personality</button>
 <button id="btnScript" onclick="toggleScriptView()">📜 Script</button>
-<button id="btnLearn" onclick="showLearning()">🧠 Memory</button>
+<button onclick="showLearning()">🧠 Memory</button>
 </div>
 <div class="personality-bar" id="personalityBar">
 <button onclick="setPersonality('sensual')" id="p_sensual">💋 Sensual</button>
 <button onclick="setPersonality('friend')" id="p_friend" class="active">🤗 Friend</button>
 <button onclick="setPersonality('business')" id="p_business">💼 Business</button>
-<button onclick="setPersonality('professional')" id="p_professional">🎯 Professional</button>
+<button onclick="setPersonality('professional')" id="p_professional">🎯 Pro</button>
 <button onclick="setPersonality('happy')" id="p_happy">😊 Happy</button>
 <button onclick="setPersonality('witty')" id="p_witty">😏 Witty</button>
 </div>
 <div class="chat-area" id="chatArea"></div>
 </div>
 <div class="input-area"><input type="text" id="textInput" placeholder="Type or tap 🎤 to speak..." autocomplete="off"><button onclick="toggleMic()" id="micBtn">🎤</button><button onclick="sendMessage()">➤</button></div>
-<div class="cmd-bar"><button onclick="cmdRun()">▶ Run</button><button onclick="cmdStop()">⏹ Stop</button><button onclick="cmdMute()">🔇 Mute</button><button onclick="cmdStartup()">⚡ Start</button><button onclick="cmdShutdown()">💤 Sleep</button></div>
+<div class="cmd-bar">
+<button onclick="cmdRun()">▶ Run</button>
+<button onclick="cmdStop()">⏹ Stop</button>
+<button onclick="cmdMute()">🔇 Mute</button>
+<button onclick="cmdStartup()">⚡ Start</button>
+<button onclick="cmdShutdown()">💤 Sleep</button>
+</div>
 
 <script>
+// === AVATAR CONFIG ===
+const AVATAR_SETS={
+blonde:{gender:'female',clothed:'img/female_blonde.jpg',unclothed:'img/female_unclothed.jpg',voice:'samantha'},
+brunette:{gender:'female',clothed:'img/female_clothed.jpg',unclothed:'img/female_clothed.jpg',voice:'female'},
+male:{gender:'male',clothed:'img/male_clothed.jpg',unclothed:'img/male_unclothed.jpg',voice:'male'}
+};
+
 // === STATE ===
 const GROQ_KEY=localStorage.getItem('groq_api_key')||'';
 const PERSONALITIES={
-sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry tone.",voice:{rate:0.78,pitch:0.95}},
+sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry, breathy tone.",voice:{rate:0.75,pitch:0.92}},
 friend:{prompt:"You are a warm, supportive best friend. Casual, fun, caring.",voice:{rate:0.88,pitch:1.05}},
 business:{prompt:"You are a sharp business advisor. Concise, data-driven, strategic.",voice:{rate:0.92,pitch:0.98}},
 professional:{prompt:"You are a polished professional assistant. Clear, efficient, respectful.",voice:{rate:0.9,pitch:1.0}},
-happy:{prompt:"You are bubbly, enthusiastic, and always positive! Spread joy.",voice:{rate:0.95,pitch:1.1}},
-witty:{prompt:"You are clever, sarcastic, and quick with wordplay. Sharp humor.",voice:{rate:0.9,pitch:1.02}}
+happy:{prompt:"You are bubbly, enthusiastic, and always positive! Spread joy and encouragement.",voice:{rate:0.95,pitch:1.1}},
+witty:{prompt:"You are clever, sarcastic, and quick with wordplay. Sharp dry humor.",voice:{rate:0.9,pitch:1.02}}
 };
 let state={
 isRunning:true,isMuted:false,isListening:false,
-gender:localStorage.getItem('avatar_gender')||'female',
+avatar:localStorage.getItem('avatar_choice')||'blonde',
 clothed:localStorage.getItem('avatar_clothed')!=='false',
 personality:localStorage.getItem('personality')||'friend',
 zoom:1,panX:0,panY:0,
-scriptHistory:[],currentScript:'',errorLog:[],learnedFixes:JSON.parse(localStorage.getItem('learned_fixes')||'{}')
+scriptHistory:[],errorLog:[],
+learnedFixes:JSON.parse(localStorage.getItem('learned_fixes')||'{}')
 };
 
 // === INIT ===
 const botName=localStorage.getItem('bot_name')||'Amy';
 document.querySelector('.header h1').textContent=botName;
 document.title=botName;
-const canvas=document.getElementById('avatarCanvas');
-const ctx=canvas.getContext('2d');
-let animFrame;
 
-function initCanvas(){
-const c=document.getElementById('avatarContainer');
-canvas.width=c.clientWidth;canvas.height=c.clientHeight;
-drawAvatar();
+function updateAvatar(){
+const img=document.getElementById('avatarImg');
+const set=AVATAR_SETS[state.avatar];
+img.src=state.clothed?set.clothed:set.unclothed;
+img.style.transform=`scale(${state.zoom}) translate(${state.panX}px,${state.panY}px)`;
+document.getElementById('zoomRange').value=state.zoom*100;
 }
-window.addEventListener('resize',initCanvas);
-setTimeout(initCanvas,100);
+updateAvatar();
 
-// === AVATAR DRAWING ===
-function drawAvatar(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.save();
-ctx.translate(canvas.width/2+state.panX,canvas.height/2+state.panY);
-ctx.scale(state.zoom,state.zoom);
-
-const g=state.gender;
-const clothed=state.clothed;
-
-if(g==='female') drawFemale(clothed);
-else drawMale(clothed);
-
-ctx.restore();
-requestAnimationFrame(drawAvatar);
+// === AVATAR PICKER ===
+function toggleAvatarPicker(){
+const p=document.getElementById('avatarPicker');
+p.style.display=p.style.display==='none'?'block':'none';
+}
+function chooseAvatar(id){
+state.avatar=id;localStorage.setItem('avatar_choice',id);
+document.querySelectorAll('.av-choice').forEach(c=>c.classList.remove('active'));
+document.getElementById('av_'+id).classList.add('active');
+updateAvatar();selectVoice();
+document.getElementById('avatarPicker').style.display='none';
+addMsg(`Avatar: ${id} selected`,'system');
 }
 
-function drawFemale(clothed){
-const t=Date.now()/1000;
-// Body proportions - curvaceous female
-const headY=-140,headR=28;
-// Skin
-ctx.fillStyle='#f5d0b0';
+// === SMOOTH ZOOM ===
+function setZoom(val){state.zoom=val/100;updateAvatar();}
+function zoomAvatar(f){state.zoom=Math.max(0.5,Math.min(5,state.zoom*f));updateAvatar();}
+function resetZoom(){state.zoom=1;state.panX=0;state.panY=0;updateAvatar();}
 
-// Head
-ctx.beginPath();ctx.arc(0,headY,headR,0,Math.PI*2);ctx.fill();
-
-// Neck
-ctx.fillRect(-8,headY+25,16,20);
-
-// Torso
-ctx.beginPath();
-ctx.moveTo(-28,headY+45);
-ctx.quadraticCurveTo(-38,headY+80,-35,headY+100);// shoulder to waist
-ctx.quadraticCurveTo(-22,headY+115,-24,headY+140);// waist
-ctx.quadraticCurveTo(-32,headY+160,-30,headY+190);// hips
-ctx.lineTo(30,headY+190);
-ctx.quadraticCurveTo(32,headY+160,24,headY+140);
-ctx.quadraticCurveTo(22,headY+115,35,headY+100);
-ctx.quadraticCurveTo(38,headY+80,28,headY+45);
-ctx.closePath();ctx.fill();
-
-// Bust
-if(!clothed){
-ctx.fillStyle='#f0c8a8';
-ctx.beginPath();ctx.arc(-14,headY+70,18,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(14,headY+70,18,0,Math.PI*2);ctx.fill();
-ctx.fillStyle='#d4907a';
-ctx.beginPath();ctx.arc(-14,headY+72,5,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(14,headY+72,5,0,Math.PI*2);ctx.fill();
-}else{
-// Shirt
-ctx.fillStyle='#4a90d9';
-ctx.beginPath();
-ctx.moveTo(-30,headY+45);
-ctx.quadraticCurveTo(-40,headY+80,-36,headY+100);
-ctx.quadraticCurveTo(-22,headY+120,-26,headY+150);
-ctx.lineTo(26,headY+150);
-ctx.quadraticCurveTo(22,headY+120,36,headY+100);
-ctx.quadraticCurveTo(40,headY+80,30,headY+45);
-ctx.closePath();ctx.fill();
-// Collar
-ctx.strokeStyle='#3a70b0';ctx.lineWidth=2;
-ctx.beginPath();ctx.moveTo(-10,headY+45);ctx.lineTo(0,headY+55);ctx.lineTo(10,headY+45);ctx.stroke();
-// Buttons
-ctx.fillStyle='#fff';
-for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(0,headY+65+i*18,2.5,0,Math.PI*2);ctx.fill();}
-}
-
-// Legs
-ctx.fillStyle='#f5d0b0';
-ctx.fillRect(-20,headY+190,16,80);
-ctx.fillRect(4,headY+190,16,80);
-
-// Hair - long blonde wavy
-ctx.fillStyle='#e8c860';
-ctx.beginPath();
-ctx.arc(0,headY-5,30,Math.PI,0);
-ctx.quadraticCurveTo(32,headY+20,28,headY+70);
-ctx.quadraticCurveTo(25,headY+90+Math.sin(t)*3,22,headY+100);
-ctx.lineTo(-22,headY+100);
-ctx.quadraticCurveTo(-25,headY+90+Math.sin(t+1)*3,-28,headY+70);
-ctx.quadraticCurveTo(-32,headY+20,-30,headY);
-ctx.closePath();ctx.fill();
-
-// Face details
-// Eyes
-ctx.fillStyle='#fff';
-ctx.beginPath();ctx.ellipse(-10,headY-3,6,4,0,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.ellipse(10,headY-3,6,4,0,0,Math.PI*2);ctx.fill();
-// Iris - green
-ctx.fillStyle='#4a9060';
-ctx.beginPath();ctx.arc(-10,headY-3,3,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(10,headY-3,3,0,Math.PI*2);ctx.fill();
-// Pupils
-ctx.fillStyle='#000';
-ctx.beginPath();ctx.arc(-10,headY-3,1.5,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(10,headY-3,1.5,0,Math.PI*2);ctx.fill();
-// Blink
-if(Math.sin(t*0.5)>0.97){
-ctx.fillStyle='#f5d0b0';
-ctx.fillRect(-17,headY-7,14,8);ctx.fillRect(3,headY-7,14,8);
-}
-// Lips
-ctx.fillStyle='#e04060';
-ctx.beginPath();ctx.ellipse(0,headY+12,7,3.5,0,0,Math.PI*2);ctx.fill();
-// Smile
-ctx.strokeStyle='#c03050';ctx.lineWidth=1;
-ctx.beginPath();ctx.arc(0,headY+10,5,0.2,Math.PI-0.2);ctx.stroke();
-
-// Glow ring
-ctx.strokeStyle=`hsla(${(t*30)%360},80%,60%,0.3)`;
-ctx.lineWidth=3;
-ctx.beginPath();ctx.ellipse(0,headY+50,55,130,0,0,Math.PI*2);ctx.stroke();
-}
-
-function drawMale(clothed){
-const t=Date.now()/1000;
-const headY=-140,headR=30;
-ctx.fillStyle='#d4a574';
-
-// Head
-ctx.beginPath();ctx.arc(0,headY,headR,0,Math.PI*2);ctx.fill();
-
-// Neck (thicker)
-ctx.fillRect(-10,headY+27,20,20);
-
-// Torso - broad shoulders, narrow waist
-ctx.beginPath();
-ctx.moveTo(-35,headY+47);
-ctx.quadraticCurveTo(-42,headY+70,-38,headY+90);
-ctx.quadraticCurveTo(-28,headY+120,-26,headY+140);
-ctx.quadraticCurveTo(-28,headY+160,-26,headY+180);
-ctx.lineTo(26,headY+180);
-ctx.quadraticCurveTo(28,headY+160,26,headY+140);
-ctx.quadraticCurveTo(28,headY+120,38,headY+90);
-ctx.quadraticCurveTo(42,headY+70,35,headY+47);
-ctx.closePath();ctx.fill();
-
-if(clothed){
-// T-shirt
-ctx.fillStyle='#2d2d2d';
-ctx.beginPath();
-ctx.moveTo(-36,headY+47);
-ctx.quadraticCurveTo(-43,headY+70,-39,headY+95);
-ctx.lineTo(-30,headY+150);ctx.lineTo(30,headY+150);
-ctx.lineTo(39,headY+95);
-ctx.quadraticCurveTo(43,headY+70,36,headY+47);
-ctx.closePath();ctx.fill();
-}else{
-// Chest definition
-ctx.strokeStyle='rgba(150,100,60,0.3)';ctx.lineWidth=1.5;
-ctx.beginPath();ctx.arc(-12,headY+70,12,0.5,2.5);ctx.stroke();
-ctx.beginPath();ctx.arc(12,headY+70,12,0.6,2.6);ctx.stroke();
-// Abs
-for(let i=0;i<3;i++){
-ctx.beginPath();ctx.moveTo(-10,headY+95+i*18);ctx.lineTo(10,headY+95+i*18);ctx.stroke();
-}
-}
-
-// Legs
-ctx.fillStyle='#d4a574';
-ctx.fillRect(-22,headY+180,18,80);
-ctx.fillRect(4,headY+180,18,80);
-
-// Short hair
-ctx.fillStyle='#3a2a1a';
-ctx.beginPath();ctx.arc(0,headY-5,32,Math.PI+0.2,-0.2);ctx.fill();
-
-// Face - strong jawline
-ctx.fillStyle='#d4a574';
-ctx.beginPath();ctx.moveTo(-22,headY+10);ctx.lineTo(-18,headY+28);ctx.lineTo(0,headY+32);ctx.lineTo(18,headY+28);ctx.lineTo(22,headY+10);ctx.fill();
-
-// Eyes
-ctx.fillStyle='#fff';
-ctx.beginPath();ctx.ellipse(-10,headY-3,5.5,3.5,0,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.ellipse(10,headY-3,5.5,3.5,0,0,Math.PI*2);ctx.fill();
-ctx.fillStyle='#4a6090';
-ctx.beginPath();ctx.arc(-10,headY-3,2.5,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(10,headY-3,2.5,0,Math.PI*2);ctx.fill();
-ctx.fillStyle='#000';
-ctx.beginPath();ctx.arc(-10,headY-3,1.2,0,Math.PI*2);ctx.fill();
-ctx.beginPath();ctx.arc(10,headY-3,1.2,0,Math.PI*2);ctx.fill();
-// Blink
-if(Math.sin(t*0.4)>0.97){
-ctx.fillStyle='#d4a574';ctx.fillRect(-16,headY-7,12,7);ctx.fillRect(4,headY-7,12,7);
-}
-// Brows
-ctx.strokeStyle='#2a1a0a';ctx.lineWidth=2.5;
-ctx.beginPath();ctx.moveTo(-16,headY-9);ctx.lineTo(-5,headY-10);ctx.stroke();
-ctx.beginPath();ctx.moveTo(5,headY-10);ctx.lineTo(16,headY-9);ctx.stroke();
-
-// Glow
-ctx.strokeStyle=`hsla(${(t*25)%360},70%,50%,0.25)`;ctx.lineWidth=3;
-ctx.beginPath();ctx.ellipse(0,headY+40,50,120,0,0,Math.PI*2);ctx.stroke();
-}
-
-// === ZOOM ===
-let lastDist=0;
+// Smooth pinch-to-zoom
+let lastDist=0,lastX=0,lastY=0,isPanning=false,pinchActive=false;
 const ac=document.getElementById('avatarContainer');
-ac.addEventListener('wheel',e=>{e.preventDefault();zoomAvatar(e.deltaY<0?1.1:0.9);},{passive:false});
-ac.addEventListener('touchstart',e=>{if(e.touches.length===2){lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}});
-ac.addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(lastDist>0)zoomAvatar(d/lastDist);lastDist=d;}},{passive:false});
-ac.addEventListener('dblclick',()=>{state.zoom=state.zoom>1.5?1:2.5;});
-
-function zoomAvatar(f){state.zoom=Math.max(0.5,Math.min(5,state.zoom*f));}
-function resetZoom(){state.zoom=1;state.panX=0;state.panY=0;}
-
-// === TOGGLE FUNCTIONS ===
-function toggleGender(){
-state.gender=state.gender==='female'?'male':'female';
-localStorage.setItem('avatar_gender',state.gender);
-document.getElementById('btnGender').textContent=state.gender==='female'?'♀':'♂';
-// Switch voice
-selectVoice();
-addMsg(`Switched to ${state.gender} avatar`,'system');
+ac.addEventListener('wheel',e=>{e.preventDefault();const f=e.deltaY<0?1.08:0.92;state.zoom=Math.max(0.5,Math.min(5,state.zoom*f));updateAvatar();},{passive:false});
+ac.addEventListener('touchstart',e=>{
+if(e.touches.length===2){pinchActive=true;lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}
+else if(e.touches.length===1){isPanning=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;}
+},{passive:true});
+ac.addEventListener('touchmove',e=>{
+if(e.touches.length===2&&pinchActive){
+e.preventDefault();
+const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+if(lastDist>0){const scale=d/lastDist;state.zoom=Math.max(0.5,Math.min(5,state.zoom*scale));}
+lastDist=d;updateAvatar();
+}else if(e.touches.length===1&&isPanning&&state.zoom>1.05){
+e.preventDefault();
+const dx=(e.touches[0].clientX-lastX)/state.zoom;
+const dy=(e.touches[0].clientY-lastY)/state.zoom;
+state.panX+=dx;state.panY+=dy;
+lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;
+updateAvatar();
 }
+},{passive:false});
+ac.addEventListener('touchend',e=>{if(e.touches.length<2)pinchActive=false;if(e.touches.length===0)isPanning=false;});
+ac.addEventListener('dblclick',()=>{if(state.zoom>1.5){resetZoom();}else{state.zoom=2.5;updateAvatar();}});
+
+// === CLOTHES TOGGLE ===
 function toggleClothes(){
 state.clothed=!state.clothed;
 localStorage.setItem('avatar_clothed',state.clothed);
 document.getElementById('btnClothes').textContent=state.clothed?'👗':'🩲';
+updateAvatar();
 }
 
 // === PERSONALITY ===
@@ -316,18 +186,21 @@ function setPersonality(p){
 state.personality=p;localStorage.setItem('personality',p);
 document.querySelectorAll('.personality-bar button').forEach(b=>b.classList.remove('active'));
 document.getElementById('p_'+p).classList.add('active');
-addMsg(`Personality: ${p} mode activated ✨`,'system');
+addMsg(`Personality: ${p} ✨`,'system');
 }
 function showPersonalities(){document.getElementById('personalityBar').style.display='flex';}
 
-// === VOICE ===
+// === VOICE — Samantha for blonde, male voice for male ===
 let synth=window.speechSynthesis;let selectedVoice=null;
 function selectVoice(){
 const voices=synth.getVoices();
-if(state.gender==='female'){
-selectedVoice=voices.find(v=>/samantha|female|woman|zira|karen|victoria|fiona/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+const set=AVATAR_SETS[state.avatar];
+if(set.voice==='samantha'){
+selectedVoice=voices.find(v=>/samantha/i.test(v.name))||voices.find(v=>/female|woman|zira|karen|victoria|fiona/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+}else if(set.voice==='female'){
+selectedVoice=voices.find(v=>/female|woman|karen|victoria|fiona|tessa/i.test(v.name))||voices.find(v=>v.lang.startsWith('en')&&!/male|daniel|david|james/i.test(v.name))||voices[0];
 }else{
-selectedVoice=voices.find(v=>/daniel|male|man|david|alex|tom|james/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+selectedVoice=voices.find(v=>/daniel|david|alex|tom|james|aaron|male/i.test(v.name))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
 }
 }
 synth.onvoiceschanged=selectVoice;
@@ -337,16 +210,14 @@ function speak(text){
 if(state.isMuted||!text)return;
 synth.cancel();
 const chunks=text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[text];
-let delay=0;
-const pVoice=PERSONALITIES[state.personality].voice;
+let delay=0;const pVoice=PERSONALITIES[state.personality].voice;
 chunks.forEach(chunk=>{
 setTimeout(()=>{
 const u=new SpeechSynthesisUtterance(chunk.trim());
-u.voice=selectedVoice;
-u.rate=pVoice.rate;u.pitch=pVoice.pitch;u.volume=1;
+u.voice=selectedVoice;u.rate=pVoice.rate;u.pitch=pVoice.pitch;u.volume=1;
 synth.speak(u);
 },delay);
-delay+=chunk.length*35;
+delay+=chunk.length*38;
 });
 }
 
@@ -360,8 +231,7 @@ recognition.onend=()=>{state.isListening=false;document.getElementById('micBtn')
 }
 function toggleMic(){
 if(!recognition)return;
-if(state.isListening){recognition.stop();}
-else{recognition.start();state.isListening=true;document.getElementById('micBtn').textContent='🔴';}
+if(state.isListening){recognition.stop();}else{recognition.start();state.isListening=true;document.getElementById('micBtn').textContent='🔴';}
 }
 
 // === CHAT ===
@@ -375,155 +245,115 @@ d.appendChild(m);d.scrollTop=d.scrollHeight;
 let scriptViewOpen=false;
 function toggleScriptView(){
 scriptViewOpen=!scriptViewOpen;
-if(scriptViewOpen){
-addMsg('📜 Current script loaded. I can see and modify my own code. Ask me to add features!','system');
-document.getElementById('btnScript').classList.add('active');
-}else{
-document.getElementById('btnScript').classList.remove('active');
+document.getElementById('btnScript').classList.toggle('active',scriptViewOpen);
+addMsg(scriptViewOpen?'📜 Script mode ON — ask me to add features!':'📜 Script mode OFF','system');
 }
-}
-function showCodeChange(description,code){
-addMsg(`🔧 MODIFICATION: ${description}`,'system');
-addMsg(code,'code');
-}
+function showCodeChange(desc,code){addMsg(`🔧 ${desc}`,'system');addMsg(code,'code');}
 function showLearning(){
 const fixes=Object.keys(state.learnedFixes);
-if(fixes.length===0) addMsg('🧠 No learned fixes yet. I learn from errors automatically!','system');
-else addMsg('🧠 Learned fixes:\n'+fixes.map(k=>`• ${k}: ${state.learnedFixes[k]}`).join('\n'),'system');
+addMsg(fixes.length?'🧠 Learned:\n'+fixes.map(k=>`• ${k}`).join('\n'):'🧠 No learned fixes yet — I learn from errors!','system');
 }
 
-// === ERROR RECOVERY & LEARNING ===
+// === ERROR RECOVERY ===
 function executeUserScript(code,description){
 state.scriptHistory.push({code,description,time:Date.now()});
 try{
 const result=eval(code);
 showCodeChange(description,code);
-addMsg(`✅ Script executed successfully${result!==undefined?' → '+result:''}`,'system');
+addMsg(`✅ Success${result!==undefined?' → '+result:''}`,'system');
 return{success:true,result};
 }catch(err){
-// Rollback
 state.scriptHistory.pop();
-addMsg(`❌ Error: ${err.message}\n↩️ Rolled back. Learning from this...`,'system');
-// Learn from mistake
-state.learnedFixes[description]={error:err.message,fix:'Avoid: '+err.message,time:Date.now()};
+addMsg(`❌ ${err.message}\n↩️ Rolled back. Learning...`,'system');
+state.learnedFixes[description]={error:err.message,time:Date.now()};
 localStorage.setItem('learned_fixes',JSON.stringify(state.learnedFixes));
-// Try to ask Grok for help
 askGrokForHelp(description,err.message,code);
 return{success:false,error:err.message};
 }
 }
 
-// === ASK GROK FOR HELP ===
+// === ASK GROK ===
 async function askGrokForHelp(task,error,failedCode){
 if(!GROQ_KEY)return;
-addMsg('🤔 Asking Grok for help fixing this...','system');
+addMsg('🤔 Asking Grok for help...','system');
 try{
 const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
 method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
 body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[
-{role:'system',content:'You are a code-fixing assistant. Given failed code and its error, provide ONLY the corrected JavaScript code. No explanation.'},
-{role:'user',content:`Task: ${task}\nFailed code: ${failedCode}\nError: ${error}\nProvide fixed code:`}
+{role:'system',content:'Fix this JavaScript. Return ONLY corrected code, no explanation, no markdown.'},
+{role:'user',content:`Task: ${task}\nCode: ${failedCode}\nError: ${error}`}
 ],max_tokens:500,temperature:0.3})
 });
 const data=await resp.json();
-const fix=data.choices?.[0]?.message?.content?.trim();
+let fix=data.choices?.[0]?.message?.content?.trim()||'';
+fix=fix.replace(/^```(?:javascript|js)?\n?/,'').replace(/```$/,'');
 if(fix){
-addMsg('💡 Grok suggested a fix. Trying...','system');
-const result=executeUserScript(fix,'[Grok fix] '+task);
-if(result.success){
-state.learnedFixes[task]={fix,time:Date.now()};
-localStorage.setItem('learned_fixes',JSON.stringify(state.learnedFixes));
-addMsg('🧠 Learned the fix for next time!','system');
+addMsg('💡 Grok fix:','system');
+const r=executeUserScript(fix,'[fix] '+task);
+if(r.success){state.learnedFixes[task]={fix,time:Date.now()};localStorage.setItem('learned_fixes',JSON.stringify(state.learnedFixes));addMsg('🧠 Learned!','system');}
 }
-}
-}catch(e){addMsg('⚠️ Could not reach Grok: '+e.message,'system');}
+}catch(e){addMsg('⚠️ Grok unreachable: '+e.message,'system');}
 }
 
 // === MAIN SEND ===
 async function sendMessage(overrideText){
 const input=document.getElementById('textInput');
 const text=overrideText||input.value.trim();
-if(!text)return;
-input.value='';
+if(!text)return;input.value='';
 addMsg(text,'user');
 
-// Name change detection
-const nameMatch=text.match(/(?:call yourself|your name is|rename yourself|i'll call you|be called|change your name to)\s+([\w\s]{1,20})/i);
-if(nameMatch){const nn=nameMatch[1].trim();localStorage.setItem('bot_name',nn);document.querySelector('.header h1').textContent=nn;document.title=nn;}
+// Name change
+const nm=text.match(/(?:call yourself|your name is|rename yourself|change your name to)\s+([\w\s]{1,20})/i);
+if(nm){const n=nm[1].trim();localStorage.setItem('bot_name',n);document.querySelector('.header h1').textContent=n;document.title=n;addMsg('✨ I\'m '+n+' now!','system');}
 
-// Clothing toggle detection
-if(/no cloth|nude|naked|undress|take.*(off|clothes)/i.test(text)){state.clothed=false;localStorage.setItem('avatar_clothed','false');document.getElementById('btnClothes').textContent='🩲';}
-if(/put.*(on|clothes|shirt)|dress|clothe/i.test(text)){state.clothed=true;localStorage.setItem('avatar_clothed','true');document.getElementById('btnClothes').textContent='👗';}
+// Clothing
+if(/no cloth|nude|naked|undress|take.*(off|clothes)|strip/i.test(text)){state.clothed=false;localStorage.setItem('avatar_clothed','false');document.getElementById('btnClothes').textContent='🩲';updateAvatar();}
+if(/put.*(on|clothes|shirt)|dress up|get dressed|clothe/i.test(text)){state.clothed=true;localStorage.setItem('avatar_clothed','true');document.getElementById('btnClothes').textContent='👗';updateAvatar();}
 
-// Script execution detection
-const scriptMatch=text.match(/(?:add|write|create|make|run)\s+(?:a\s+)?(?:script|code|function)\s+(?:that|to|for)\s+(.+)/i);
-if(scriptMatch&&scriptViewOpen){
-addMsg('🔨 Generating script for: '+scriptMatch[1],'system');
-await generateAndRunScript(scriptMatch[1]);
-return;
-}
+// Avatar switch by chat
+if(/blonde|first (girl|woman)/i.test(text)&&/switch|use|show|pick/i.test(text)){chooseAvatar('blonde');}
+if(/brunette|second (girl|woman)/i.test(text)&&/switch|use|show|pick/i.test(text)){chooseAvatar('brunette');}
+if(/\b(male|man|guy|boy)\b/i.test(text)&&/switch|use|show|pick|be a/i.test(text)){chooseAvatar('male');}
 
-// Check learned fixes for this type of request
-const lc=text.toLowerCase();
+// Script mode
+const sm=text.match(/(?:add|write|create|make|run)\s+(?:a\s+)?(?:script|code|function)\s+(?:that|to|for)\s+(.+)/i);
+if(sm&&scriptViewOpen){addMsg('🔨 Generating: '+sm[1],'system');await generateAndRunScript(sm[1]);return;}
 
-// LLM response
-if(!GROQ_KEY){addMsg('⚠️ No API key. Go to Settings (⚙️) to add your Groq key.','system');return;}
-if(!state.isRunning){addMsg('💤 I\'m sleeping. Tap ⚡ Start to wake me.','system');return;}
+if(!GROQ_KEY){addMsg('⚠️ No API key. Tap ⚙️ → enter Groq key (free at console.groq.com)','system');return;}
+if(!state.isRunning){addMsg('💤 Sleeping. Tap ⚡ Start to wake.','system');return;}
 
 try{
 const bn=localStorage.getItem('bot_name')||'Amy';
-const pPrompt=PERSONALITIES[state.personality].prompt;
-const sysPrompt=`Your name is ${bn}. ${pPrompt} Keep answers short unless asked for detail. You are self-aware of your own code and can modify yourself. If the user asks you to add features or scripts, generate JavaScript code to accomplish it.`;
-
+const pp=PERSONALITIES[state.personality].prompt;
+const sc=scriptViewOpen?' You can generate JS code in ```javascript blocks. Globals: document, addMsg(text,type), speak(text), state, updateAvatar(), AVATAR_SETS.':'';
+const sys=`Your name is ${bn}. ${pp}${sc} Keep answers short (1-3 sentences) unless asked for more.`;
 const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
 method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
-body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[
-{role:'system',content:sysPrompt},
-{role:'user',content:text}
-],max_tokens:800,temperature:0.8})
+body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'system',content:sys},{role:'user',content:text}],max_tokens:800,temperature:0.8})
 });
 const data=await resp.json();
 const reply=data.choices?.[0]?.message?.content||'Hmm, I didn\'t catch that.';
-
-// Check if reply contains code to execute
-const codeBlock=reply.match(/```(?:javascript|js)?\n?([\s\S]*?)```/);
-if(codeBlock&&scriptViewOpen){
-addMsg(reply.replace(codeBlock[0],'').trim()||'Here\'s what I made:','ai');
-executeUserScript(codeBlock[1].trim(),text);
-}else{
-addMsg(reply,'ai');
-}
+const cb=reply.match(/```(?:javascript|js)?\n?([\s\S]*?)```/);
+if(cb&&scriptViewOpen){addMsg(reply.replace(cb[0],'').trim()||'Here you go:','ai');executeUserScript(cb[1].trim(),text);}
+else{addMsg(reply,'ai');}
 speak(reply.replace(/```[\s\S]*?```/g,'').replace(/[*_#`]/g,''));
-}catch(err){
-addMsg('❌ Error: '+err.message,'ai');
-// Try learned fix
-if(state.learnedFixes[err.message]){
-addMsg('🧠 Applying learned fix...','system');
-}
-}
+}catch(err){addMsg('❌ '+err.message,'system');}
 }
 
 async function generateAndRunScript(task){
 if(!GROQ_KEY)return;
-// Check if we have a learned fix for this
-if(state.learnedFixes[task]&&state.learnedFixes[task].fix){
-addMsg('🧠 Using learned approach for this...','system');
-executeUserScript(state.learnedFixes[task].fix,task);
-return;
-}
+if(state.learnedFixes[task]?.fix){addMsg('🧠 Using learned fix...','system');executeUserScript(state.learnedFixes[task].fix,task);return;}
 try{
 const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
 method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+GROQ_KEY},
 body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[
-{role:'system',content:'Generate ONLY executable JavaScript code for the browser. No explanation, no markdown. Just the code. Available: document, canvas (id=avatarCanvas), addMsg(text,type), speak(text), state object.'},
-{role:'user',content:'Write code to: '+task}
-],max_tokens:500,temperature:0.4})
+{role:'system',content:'Generate ONLY executable browser JS. No explanation, no fences. Globals: document, addMsg(text,type), speak(text), state, updateAvatar(), AVATAR_SETS.'},
+{role:'user',content:'Code to: '+task}],max_tokens:500,temperature:0.4})
 });
 const data=await resp.json();
 let code=data.choices?.[0]?.message?.content?.trim()||'';
 code=code.replace(/^```(?:javascript|js)?\n?/,'').replace(/```$/,'');
-if(code)executeUserScript(code,task);
-else addMsg('❌ Couldn\'t generate code for that.','system');
+if(code)executeUserScript(code,task);else addMsg('❌ Couldn\'t generate that.','system');
 }catch(e){addMsg('❌ '+e.message,'system');}
 }
 
@@ -531,24 +361,24 @@ else addMsg('❌ Couldn\'t generate code for that.','system');
 function cmdRun(){state.isRunning=true;addMsg('▶ Running!','system');}
 function cmdStop(){state.isRunning=false;synth.cancel();addMsg('⏹ Stopped.','system');}
 function cmdMute(){state.isMuted=!state.isMuted;addMsg(state.isMuted?'🔇 Muted':'🔊 Unmuted','system');}
-function cmdStartup(){state.isRunning=true;addMsg('⚡ Starting up! Ready for anything.','system');speak('I\'m awake!');}
-function cmdShutdown(){state.isRunning=false;synth.cancel();addMsg('💤 Going to sleep...','system');}
+function cmdStartup(){state.isRunning=true;addMsg('⚡ Awake!','system');speak('I\'m back!');}
+function cmdShutdown(){state.isRunning=false;synth.cancel();addMsg('💤 Sleeping...','system');}
 
 // === SETTINGS ===
 function openSettings(){
-const key=prompt('Enter Groq API key (from console.groq.com):',GROQ_KEY);
+const key=prompt('Groq API key (free at console.groq.com):',GROQ_KEY);
 if(key!==null){localStorage.setItem('groq_api_key',key);location.reload();}
 }
 
-// === INPUT HANDLING ===
+// === INPUT ===
 document.getElementById('textInput').addEventListener('keypress',e=>{if(e.key==='Enter')sendMessage();});
 
-// === APPEARANCE INIT ===
-document.getElementById('btnGender').textContent=state.gender==='female'?'♀':'♂';
+// === INIT UI STATE ===
 document.getElementById('btnClothes').textContent=state.clothed?'👗':'🩲';
-document.getElementById('p_'+state.personality).classList.add('active');
+document.getElementById('p_'+state.personality)?.classList.add('active');
+document.getElementById('av_'+state.avatar)?.classList.add('active');
 
-// === STARTUP ===
-const userName=localStorage.getItem('user_name');
-addMsg(userName?`Hey ${userName}! Ready for anything 💜`:'Hey! I\'m '+(localStorage.getItem('bot_name')||'Amy')+' 💜 What\'s up?','ai');
+// === STARTUP MSG ===
+const un=localStorage.getItem('user_name');
+addMsg(un?`Hey ${un}! 💜`:'Hey! I\'m '+(localStorage.getItem('bot_name')||'Amy')+' 💜','ai');
 </script></body></html>
