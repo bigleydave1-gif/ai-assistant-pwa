@@ -114,6 +114,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;ba
 </div>
 
 <script>
+// === GLOBAL ERROR HANDLER ===
+window.onerror=function(msg,url,line,col,err){
+try{
+const d=document.getElementById('chatArea');
+if(d){const m=document.createElement('div');m.className='msg system';m.textContent='⚠️ Error: '+msg+' (line '+line+')';d.appendChild(m);}
+}catch(e){}
+console.error('Amy error:',msg,line,err);
+return false;
+};
+window.addEventListener('unhandledrejection',function(e){
+try{
+const d=document.getElementById('chatArea');
+if(d){const m=document.createElement('div');m.className='msg system';m.textContent='⚠️ '+((e.reason&&e.reason.message)||'Async error');d.appendChild(m);}
+}catch(ex){}
+});
+
 // === AVATAR CONFIG ===
 const AVATAR_SETS={
 blonde:{gender:'female',clothed:'img/female_clothed.jpg',unclothed:'img/female_unclothed.jpg',voice:'samantha'},
@@ -122,7 +138,7 @@ male:{gender:'male',clothed:'img/male_clothed.jpg',unclothed:'img/male_unclothed
 };
 
 // === CUSTOM AVATARS (stored in localStorage as data URLs) ===
-let customAvatars=JSON.parse(localStorage.getItem('custom_avatars')||'[]');
+let customAvatars=(function(){try{return JSON.parse(localStorage.getItem('custom_avatars')||'[]');}catch(e){return [];}})();
 
 function handleAvatarUpload(event){
 const file=event.target.files[0];
@@ -238,7 +254,7 @@ const GROK_KEY=(function(){const k=localStorage.getItem('grok_api_key')||'';try{
 
 // === KEY VALIDATION ===
 function handleAuthError(resp,provider){
-if(resp.status===401||resp.status===403||(resp.status>=400&&resp.status<500)){
+if(resp.status===401||resp.status===403){
 const keyName=provider==='grok'?'grok_api_key':'groq_api_key';
 const providerLabel=provider==='grok'?'Grok':'Groq';
 addMsg(`⚠️ Your ${providerLabel} key appears invalid or expired.`,'system');
@@ -249,9 +265,13 @@ addMsg(`✅ New ${providerLabel} key saved! Retrying...`,'system');
 location.reload();
 return true;
 }
-return true;// signal error handled
+return true;
 }
-return false;// not an auth error
+if(resp.status===429){
+addMsg('⚠️ Rate limit hit — wait a moment and try again.','system');
+return true;
+}
+return false;
 }
 const PERSONALITIES={
 sensual:{prompt:"You are seductive, flirty, and speak with innuendo. Use a sultry, breathy tone.",voice:{rate:0.75,pitch:0.92}},
@@ -268,7 +288,7 @@ clothed:localStorage.getItem('avatar_clothed')!=='false',
 personality:localStorage.getItem('personality')||'friend',
 zoom:1,panX:0,panY:0,
 scriptHistory:[],errorLog:[],
-learnedFixes:JSON.parse(localStorage.getItem('learned_fixes')||'{}')
+learnedFixes:(function(){try{return JSON.parse(localStorage.getItem('learned_fixes')||'{}');}catch(e){return {};}})()
 };
 
 // === INIT ===
@@ -631,9 +651,11 @@ if(confirm('Remove all API keys from this device?')){localStorage.removeItem('gr
 document.getElementById('textInput').addEventListener('keypress',e=>{if(e.key==='Enter')sendMessage();});
 
 // === INIT UI STATE ===
+try{
 document.getElementById('btnClothes').textContent=state.clothed?'👗':'🩲';
 document.getElementById('p_'+state.personality)?.classList.add('active');
 document.getElementById('av_'+state.avatar)?.classList.add('active');
+}catch(e){console.error('Init UI error:',e);}
 
 // === STARTUP MSG ===
 const un=localStorage.getItem('user_name');
